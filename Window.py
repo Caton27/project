@@ -9,3 +9,4 @@ class Window(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Irigation system")
+        layout = QStackedLayout()
