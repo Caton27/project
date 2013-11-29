@@ -9,6 +9,3 @@ class Window(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Irigation system")
-        self.db = QSqlDatabase.addDatabase("QSQLITE")
-        self.db.setDatabaseName("FlowerbedDatabase.db")
-        self.db.open
