@@ -53,7 +53,6 @@ class MoistureSensorsWindow(QWidget):
         self.timeframeLabel = QLabel("Timeframe")
         self.timeframeLabel.setFont(self.titleFont)
 
-
         self.timeframeComboBox = QComboBox()
         self.timeframeComboBox.addItem("24 hours")
         self.timeframeComboBox.addItem("7 days")
