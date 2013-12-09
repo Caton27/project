@@ -81,4 +81,3 @@ if __name__ == "__main__":
     for sql in sqls:
         create_table(db_name,tableList[num],sql)
         num += 1
-        
