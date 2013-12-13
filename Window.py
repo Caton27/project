@@ -2,7 +2,6 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtSql import *
 
-
 import sys
 
 class MainWindow(QMainWindow):
@@ -13,8 +12,8 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Irigation system")
         self.stackedLayout = QStackedLayout()
         self.setMenuBar = self.menu_bar()
-        self.initialLayout = self.create_initial_layout()
-        self.stackedLayout.addWidget(self.initialLayout)
+        self.initial_layout_widget = self.create_initial_layout()
+        self.stackedLayout.addWidget(self.initial_layout_widget)
 
         self.central_widget = QWidget()
         self.central_widget.setLayout(self.stackedLayout)
@@ -115,7 +114,7 @@ class MainWindow(QMainWindow):
     def temp():
         pass
 
-#this isn't working and I don't know why
+    #this isn't working and I don't know why
     def create_initial_layout(self):
         self.initial_layout = QVBoxLayout()
 
@@ -123,28 +122,13 @@ class MainWindow(QMainWindow):
         self.messageLabel = QLabel("Select an option from the menu bar to begin using the program")
         
         self.initial_layout.addWidget(self.welcomeLabel)
-        self.initial_layout.addWidget(self.welcomeLabel)
+        self.initial_layout.addWidget(self.messageLabel)
 
         self.initial_layout_widget = QWidget()
         self.initial_layout_widget.setLayout(self.initial_layout)
-    
-##    def create_view_flowerbeds_layout(self):
-##        self.layout = QVBoxLayout()
-##        self.layout1 = QHBoxLayout()
-##        self.layout2 = QHBoxLayout()
-##        self.layout3 = QHBoxLayout()
-##        self.layout4 = QHBoxLayout()
-##
-##        #create widgets for the first horizontal box layout
-##        self.title_label = QLabel("Flowerbeds")
-##        self.flowerbedNumber = QWhateverItIs() #drop-down menu
-##        self.addNewFlowerbed_button = QPushButton("Add new flowerbed")
-##
-##        #add widgets to the first horizontal box layout
-##        self.layout1.addWidget(self.title_label)
-##        self.layout1.addWidget(self.flowerbedNumber)
-##        self.layout1.addWidget(self.addNewFlowerbed_button)
 
+        return self.initial_layout_widget
+    
 if __name__ == "__main__":
     application = QApplication(sys.argv)
     window = MainWindow()
