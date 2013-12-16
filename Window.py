@@ -34,7 +34,7 @@ class MainWindow(QMainWindow):
         #creating the flowerbeds action
         self.flowerbedsAction = QAction(QIcon(), "Flowerbeds", self)
         self.flowerbedsAction.setStatusTip("View existing flowerbeds")
-        self.flowerbedsAction.triggered.connect(self.temp)
+        self.flowerbedsAction.triggered.connect(self.flowerbeds_view)
 
         #creating the moisture sensors action
         self.moistureSensorsAction = QAction(QIcon(), "Moisture Sensors", self)
@@ -149,34 +149,87 @@ class MainWindow(QMainWindow):
 
     def create_flowerbeds_layout(self):
         flowerbedList = ["1","2","3","4","5"]
-        self.flowerbeds_layout = QVBoxLayout
-        self.layout1 = QHBoxLayout
+        self.flowerbeds_layout = QVBoxLayout()
+
+        self.layout1 = QHBoxLayout()
+        self.layout2 = QHBoxLayout()
+        self.layout3 = QHBoxLayout()
+        self.layout4 = QHBoxLayout()
 
         self.titleFont = QFont()
+        self.titleFont.setPointSize(13)
         self.titleFont.setBold(True)
-
+        
+        #layout 1
         self.flowerbedLabel = QLabel("Flowerbed")
         self.flowerbedLabel.setFont(self.titleFont)
+        self.flowerbedLabel.setFixedWidth(100)
 
-        self.cucumberBox = QComboBox()
+        self.flowerbedsComboBox = QComboBox()
         for each in flowerbedList:
-            self.cucumberBox.addItem(each)
+            self.flowerbedsComboBox.addItem(each)
+        self.flowerbedsComboBox.setFixedWidth(30)
+
+        self.viewFlowerbedButton = QPushButton("View flowerbed")
+        self.viewFlowerbedButton.clicked.connect(self.temp)
+        self.viewFlowerbedButton.setFixedWidth(100)
 
         self.addFlowerbedButton = QPushButton("Add new flowerbed")
         self.addFlowerbedButton.clicked.connect(self.temp)
-
-        self.layout1.addWidget(self.flowerbedLabel)
-        self.layout1.addWidget(self.cucumberBox)
-        self.layout1.addWidget(self.addFlowerbedButton)
+        self.addFlowerbedButton.setFixedWidth(120)
         
-        self.flowerbeds_layout.addlayout(self.layout1)
+        self.layout1.addWidget(self.flowerbedLabel)
+        self.layout1.addWidget(self.flowerbedsComboBox)
+        self.layout1.addWidget(self.viewFlowerbedButton)
+        self.layout1.addWidget(self.addFlowerbedButton)
+        self.layout1.setAlignment(Qt.AlignTop)
+
+        #layout 2
+        
+        #layout 3
+        self.timeframeLabel = QLabel("Timeframe")
+        self.timeframeLabel.setFont(self.titleFont)
+        self.timeframeLabel.setFixedWidth(100)
+
+        self.timeframeComboBox = QComboBox()
+        self.timeframeComboBox.addItem("24 hours")
+        self.timeframeComboBox.addItem("7 days")
+        self.timeframeComboBox.addItem("30 days")
+        self.timeframeComboBox.addItem("6 months")
+        self.timeframeComboBox.addItem("1 year")
+        self.timeframeComboBox.addItem("all time")
+        self.timeframeComboBox.setFixedWidth(80)
+
+        self.layout3.addWidget(self.timeframeLabel)
+        self.layout3.addWidget(self.timeframeComboBox)
+        self.layout3.setAlignment(Qt.AlignTop)
+
+        #layout 4
+
+        #flowerbed links
+        linked = ["x","y","z"]
+        self.flowerbedLinks = QLabel("This flowerbed is currently linked to moisture sensors number {0}, {1} and {2}.".format(linked[0],linked[1],linked[2]))
+        self.infoFont = QFont()
+        self.infoFont.setPointSize(8)
+        self.flowerbedLinks.setFont(self.infoFont)
+        self.flowerbedLinks.setAlignment(Qt.AlignBottom)
+        
+        #add layouts
+        self.flowerbeds_layout.addLayout(self.layout1)
+        #self.flowerbeds_layout.addLayout(self.layout2)
+        self.flowerbeds_layout.addLayout(self.layout3)
+        #self.flowerbeds_layout.addLayout(self.layout4)
+        self.flowerbeds_layout.addWidget(self.flowerbedLinks)
 
         self.flowerbeds_layout_widget = QWidget()
         self.flowerbeds_layout_widget.setLayout(self.flowerbeds_layout)
 
-        return self.flowerbeds_layout_widget
+        
 
-    
+    def flowerbeds_view(self):
+        self.create_flowerbeds_layout()
+        self.stackedLayout.addWidget(self.flowerbeds_layout_widget)
+        self.stackedLayout.setCurrentIndex(1)
         
     
 if __name__ == "__main__":
