@@ -114,8 +114,12 @@ class MainWindow(QMainWindow):
         self.helpMenu.addAction(self.aboutAction)
         self.helpMenu.addAction(self.helpAction)
 
+
+
     def temp():
         pass
+
+
 
     def create_initial_layout(self):
         self.initial_layout = QVBoxLayout()
@@ -132,7 +136,7 @@ class MainWindow(QMainWindow):
         self.messageFont.setPointSize(10)
         self.messageLabel.setFont(self.messageFont)
         self.messageLabel.setAlignment(Qt.AlignHCenter)
-        
+
         self.initial_layout.addWidget(self.welcomeLabel)
         self.initial_layout.addWidget(self.messageLabel)
 
@@ -140,6 +144,40 @@ class MainWindow(QMainWindow):
         self.initial_layout_widget.setLayout(self.initial_layout)
 
         return self.initial_layout_widget
+
+
+
+    def create_flowerbeds_layout(self):
+        flowerbedList = ["1","2","3","4","5"]
+        self.flowerbeds_layout = QVBoxLayout
+        self.layout1 = QHBoxLayout
+
+        self.titleFont = QFont()
+        self.titleFont.setBold(True)
+
+        self.flowerbedLabel = QLabel("Flowerbed")
+        self.flowerbedLabel.setFont(self.titleFont)
+
+        self.cucumberBox = QComboBox()
+        for each in flowerbedList:
+            self.cucumberBox.addItem(each)
+
+        self.addFlowerbedButton = QPushButton("Add new flowerbed")
+        self.addFlowerbedButton.clicked.connect(self.temp)
+
+        self.layout1.addWidget(self.flowerbedLabel)
+        self.layout1.addWidget(self.cucumberBox)
+        self.layout1.addWidget(self.addFlowerbedButton)
+        
+        self.flowerbeds_layout.addlayout(self.layout1)
+
+        self.flowerbeds_layout_widget = QWidget()
+        self.flowerbeds_layout_widget.setLayout(self.flowerbeds_layout)
+
+        return self.flowerbeds_layout_widget
+
+    
+        
     
 if __name__ == "__main__":
     application = QApplication(sys.argv)
