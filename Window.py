@@ -11,9 +11,12 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("Irigation system")
         self.stackedLayout = QStackedLayout()
+        
         self.setMenuBar = self.menu_bar()
         self.initial_layout_widget = self.create_initial_layout()
+        self.initial_layout_widget.setMinimumSize(QSize(500,300))
         self.stackedLayout.addWidget(self.initial_layout_widget)
+        
 
         self.central_widget = QWidget()
         self.central_widget.setLayout(self.stackedLayout)
@@ -99,11 +102,11 @@ class MainWindow(QMainWindow):
         #help menu
         #creating the about {program name} action
         self.aboutAction = QAction(QIcon(), "About", self)
-        self.aboutAction.setStatusTip("Input custom queries")
+        self.aboutAction.setStatusTip("About the program")
         self.aboutAction.triggered.connect(self.temp)
 
         self.helpAction = QAction(QIcon(), "Help", self)
-        self.helpAction.setStatusTip("Input custom queries")
+        self.helpAction.setStatusTip("Help")
         self.helpAction.triggered.connect(self.temp)
 
         #adding actions to the options menu
@@ -114,12 +117,21 @@ class MainWindow(QMainWindow):
     def temp():
         pass
 
-    #this isn't working and I don't know why
     def create_initial_layout(self):
         self.initial_layout = QVBoxLayout()
 
         self.welcomeLabel = QLabel("Welcome")
+        self.welcomeFont = QFont()
+        self.welcomeFont.setPointSize(20)
+        self.welcomeFont.setBold(True)
+        self.welcomeLabel.setFont(self.welcomeFont)
+        self.welcomeLabel.setAlignment(Qt.AlignHCenter|Qt.AlignBottom)
+        
         self.messageLabel = QLabel("Select an option from the menu bar to begin using the program")
+        self.messageFont = QFont()
+        self.messageFont.setPointSize(10)
+        self.messageLabel.setFont(self.messageFont)
+        self.messageLabel.setAlignment(Qt.AlignHCenter)
         
         self.initial_layout.addWidget(self.welcomeLabel)
         self.initial_layout.addWidget(self.messageLabel)

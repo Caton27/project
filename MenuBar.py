@@ -4,7 +4,7 @@ from PyQt4.QtSql import *
 
 import sys
 
-def menu_bar(self):
+def menu_bar():
     self.statusBar()
     self.menubar = self.menuBar()
     
@@ -91,4 +91,6 @@ def menu_bar(self):
     self.helpMenu = self.menubar.addMenu("Help")
     self.helpMenu.addAction(self.aboutAction)
     self.helpMenu.addAction(self.helpAction)
+
+
 
