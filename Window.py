@@ -18,7 +18,7 @@ class MainWindow(QMainWindow):
         
         self.setMenuBar = self.menu_bar()
         self.create_windows()
-        self.initial_layout_widget.setMinimumSize(QSize(500,300))
+        self.initial_layout_widget.setMinimumSize(QSize(600,350))
         self.stackedLayout.addWidget(self.initial_layout_widget)
         
 
@@ -148,6 +148,7 @@ class MainWindow(QMainWindow):
 
 
     def create_flowerbeds_layout(self):
+        CurrentFlowerbedID = 1
         flowerbedList = ["1","2","3","4","5"]
         self.flowerbeds_layout = QVBoxLayout()
 
@@ -159,6 +160,7 @@ class MainWindow(QMainWindow):
         self.titleFont = QFont()
         self.titleFont.setPointSize(13)
         self.titleFont.setBold(True)
+
         
         #layout 1
         self.flowerbedLabel = QLabel("Flowerbed")
@@ -184,20 +186,24 @@ class MainWindow(QMainWindow):
         self.layout1.addWidget(self.addFlowerbedButton)
         self.layout1.setAlignment(Qt.AlignTop)
 
+
         #layout 2
         self.flowerbedQuery = QSqlQuery()
-        self.flowerbedQuery.prepare("""SELECT * FROM Plant
+        self.flowerbedQuery.prepare("""SELECT plantGrowing, datePlanted, waterNeed FROM Plant
                                        WHERE FlowerbedID = ?""")
-        self.flowerbedQuery.addBindValue(1)
+        self.flowerbedQuery.addBindValue(CurrentFlowerbedID)
         self.flowerbedQuery.exec_()
         self.flowerbedModel = QSqlQueryModel()
         self.flowerbedModel.setQuery(self.flowerbedQuery)
         self.flowerbedTableView = QTableView()
         self.flowerbedTableView.setModel(self.flowerbedModel)
 
-        self.flowerbedTableView.setFixedWidth(550)
+        self.flowerbedTableView.setFixedWidth(334)
+        self.flowerbedTableView.setMinimumHeight(112)
         
         self.layout2.addWidget(self.flowerbedTableView)
+        self.layout2.setAlignment(Qt.AlignLeft)
+        self.layout2.setAlignment(Qt.AlignTop)
 
 
         #layout 3
@@ -219,7 +225,24 @@ class MainWindow(QMainWindow):
         self.layout3.setAlignment(Qt.AlignTop)
 
         #layout 4
+        self.operationQuery = QSqlQuery()
+        self.operationQuery.prepare("""SELECT date, time, duration, amount, cost FROM Operation
+                                       WHERE FlowerbedID = ?""")
+        self.operationQuery.addBindValue(CurrentFlowerbedID)
+        self.operationQuery.exec_()
+        self.operationModel = QSqlQueryModel()
+        self.operationModel.setQuery(self.operationQuery)
+        self.operationTableView = QTableView()
+        self.operationTableView.setModel(self.operationModel)
 
+        #self.operationTableView.setFixedWidth(534)
+        self.operationTableView.setMinimumHeight(112)
+        
+        self.layout4.addWidget(self.operationTableView)
+        self.layout4.setAlignment(Qt.AlignLeft)
+        self.layout4.setAlignment(Qt.AlignTop)
+
+        
         #flowerbed links
         linked = ["x","y","z"]
         self.flowerbedLinks = QLabel("This flowerbed is currently linked to moisture sensors number {0}, {1} and {2}.".format(linked[0],linked[1],linked[2]))
@@ -232,7 +255,7 @@ class MainWindow(QMainWindow):
         self.flowerbeds_layout.addLayout(self.layout1)
         self.flowerbeds_layout.addLayout(self.layout2)
         self.flowerbeds_layout.addLayout(self.layout3)
-        #self.flowerbeds_layout.addLayout(self.layout4)
+        self.flowerbeds_layout.addLayout(self.layout4)
         self.flowerbeds_layout.addWidget(self.flowerbedLinks)
 
         self.flowerbeds_layout_widget = QWidget()

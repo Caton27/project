@@ -66,10 +66,12 @@ def sql_statements():
                   readingBeforeID Integer,
                   readingAfterID Integer,
                   valveID Integer,
+                  flowerbedID Integer,
                   primary key(operationID),
                   foreign key(readingBeforeID) references Reading(readingID),
                   foreign key(readingAfterID) references Reading(readingID),
-                  foreign key(valveID) references Valve(valveID))""")
+                  foreign key(valveID) references Valve(valveID),
+                  foreign key(flowerbedID) references Flowerbed(flowerbedID))""")
     return sqls
 
 
@@ -78,6 +80,6 @@ if __name__ == "__main__":
     tableList = ["Flowerbed","Valve","Plant","Sensor_Type","Sensor","Reading_Type","Reading","Operation"]
     sqls = sql_statements()
     num = 0
-    for sql in sqls:
-        create_table(db_name,tableList[num],sql)
+    for each in sqls:
+        create_table(db_name,tableList[num],each)
         num += 1
