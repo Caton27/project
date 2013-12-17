@@ -11,9 +11,13 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("Irigation system")
         self.stackedLayout = QStackedLayout()
+
+        self.db = QSqlDatabase.addDatabase("QSQLITE")
+        self.db.setDatabaseName("FlowerbedDatabase.db")
+        self.db.open()
         
         self.setMenuBar = self.menu_bar()
-        self.initial_layout_widget = self.create_initial_layout()
+        self.create_windows()
         self.initial_layout_widget.setMinimumSize(QSize(500,300))
         self.stackedLayout.addWidget(self.initial_layout_widget)
         
@@ -21,10 +25,6 @@ class MainWindow(QMainWindow):
         self.central_widget = QWidget()
         self.central_widget.setLayout(self.stackedLayout)
         self.setCentralWidget(self.central_widget)
-
-        self.db = QSqlDatabase.addDatabase("QSQLITE")
-        self.db.setDatabaseName("FlowerbedDatabase.py")
-        self.db.open()
 
     def menu_bar(self):
         self.statusBar()
@@ -60,8 +60,10 @@ class MainWindow(QMainWindow):
         self.viewMenu = self.menubar.addMenu("View")
         self.viewMenu.addAction(self.flowerbedsAction)
         self.viewMenu.addAction(self.moistureSensorsAction)
+        self.viewMenu.addSeparator()
         self.viewMenu.addAction(self.sunlightReadingsAction)
         self.viewMenu.addAction(self.rainfallReadingsAction)
+        self.viewMenu.addSeparator()
         self.viewMenu.addAction(self.volumetricsAction)
 
 
@@ -85,6 +87,7 @@ class MainWindow(QMainWindow):
         self.editMenu = self.menubar.addMenu("Edit")
         self.editMenu.addAction(self.plantsAction)
         self.editMenu.addAction(self.relationshipsAction)
+        self.editMenu.addSeparator()
         self.editMenu.addAction(self.newHardwareAction)
 
 
@@ -143,9 +146,6 @@ class MainWindow(QMainWindow):
         self.initial_layout_widget = QWidget()
         self.initial_layout_widget.setLayout(self.initial_layout)
 
-        return self.initial_layout_widget
-
-
 
     def create_flowerbeds_layout(self):
         flowerbedList = ["1","2","3","4","5"]
@@ -185,7 +185,21 @@ class MainWindow(QMainWindow):
         self.layout1.setAlignment(Qt.AlignTop)
 
         #layout 2
+        self.flowerbedQuery = QSqlQuery()
+        self.flowerbedQuery.prepare("""SELECT * FROM Plant
+                                       WHERE FlowerbedID = ?""")
+        self.flowerbedQuery.addBindValue(1)
+        self.flowerbedQuery.exec_()
+        self.flowerbedModel = QSqlQueryModel()
+        self.flowerbedModel.setQuery(self.flowerbedQuery)
+        self.flowerbedTableView = QTableView()
+        self.flowerbedTableView.setModel(self.flowerbedModel)
+
+        self.flowerbedTableView.setFixedWidth(550)
         
+        self.layout2.addWidget(self.flowerbedTableView)
+
+
         #layout 3
         self.timeframeLabel = QLabel("Timeframe")
         self.timeframeLabel.setFont(self.titleFont)
@@ -216,7 +230,7 @@ class MainWindow(QMainWindow):
         
         #add layouts
         self.flowerbeds_layout.addLayout(self.layout1)
-        #self.flowerbeds_layout.addLayout(self.layout2)
+        self.flowerbeds_layout.addLayout(self.layout2)
         self.flowerbeds_layout.addLayout(self.layout3)
         #self.flowerbeds_layout.addLayout(self.layout4)
         self.flowerbeds_layout.addWidget(self.flowerbedLinks)
@@ -224,10 +238,11 @@ class MainWindow(QMainWindow):
         self.flowerbeds_layout_widget = QWidget()
         self.flowerbeds_layout_widget.setLayout(self.flowerbeds_layout)
 
-        
+    def create_windows(self):
+        self.create_initial_layout()
+        self.create_flowerbeds_layout()
 
     def flowerbeds_view(self):
-        self.create_flowerbeds_layout()
         self.stackedLayout.addWidget(self.flowerbeds_layout_widget)
         self.stackedLayout.setCurrentIndex(1)
         
