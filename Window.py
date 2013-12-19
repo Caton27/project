@@ -2,6 +2,9 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtSql import *
 
+from CreateFlowerbedsLayout import *
+from CreateInitialLayout import *
+
 import sys
 
 class MainWindow(QMainWindow):
@@ -19,9 +22,8 @@ class MainWindow(QMainWindow):
         self.setMenuBar = self.menu_bar()
         self.create_windows()
         self.initial_layout_widget.setMinimumSize(QSize(600,350))
-        self.stackedLayout.addWidget(self.initial_layout_widget)
+        self.add_windows()
         
-
         self.central_widget = QWidget()
         self.central_widget.setLayout(self.stackedLayout)
         self.setCentralWidget(self.central_widget)
@@ -118,155 +120,18 @@ class MainWindow(QMainWindow):
         self.helpMenu.addAction(self.helpAction)
 
 
-
     def temp():
         pass
 
-
-
-    def create_initial_layout(self):
-        self.initial_layout = QVBoxLayout()
-
-        self.welcomeLabel = QLabel("Welcome")
-        self.welcomeFont = QFont()
-        self.welcomeFont.setPointSize(20)
-        self.welcomeFont.setBold(True)
-        self.welcomeLabel.setFont(self.welcomeFont)
-        self.welcomeLabel.setAlignment(Qt.AlignHCenter|Qt.AlignBottom)
-        
-        self.messageLabel = QLabel("Select an option from the menu bar to begin using the program")
-        self.messageFont = QFont()
-        self.messageFont.setPointSize(10)
-        self.messageLabel.setFont(self.messageFont)
-        self.messageLabel.setAlignment(Qt.AlignHCenter)
-
-        self.initial_layout.addWidget(self.welcomeLabel)
-        self.initial_layout.addWidget(self.messageLabel)
-
-        self.initial_layout_widget = QWidget()
-        self.initial_layout_widget.setLayout(self.initial_layout)
-
-
-    def create_flowerbeds_layout(self):
-        CurrentFlowerbedID = 1
-        flowerbedList = ["1","2","3","4","5"]
-        self.flowerbeds_layout = QVBoxLayout()
-
-        self.layout1 = QHBoxLayout()
-        self.layout2 = QHBoxLayout()
-        self.layout3 = QHBoxLayout()
-        self.layout4 = QHBoxLayout()
-
-        self.titleFont = QFont()
-        self.titleFont.setPointSize(13)
-        self.titleFont.setBold(True)
-
-        
-        #layout 1
-        self.flowerbedLabel = QLabel("Flowerbed")
-        self.flowerbedLabel.setFont(self.titleFont)
-        self.flowerbedLabel.setFixedWidth(100)
-
-        self.flowerbedsComboBox = QComboBox()
-        for each in flowerbedList:
-            self.flowerbedsComboBox.addItem(each)
-        self.flowerbedsComboBox.setFixedWidth(30)
-
-        self.viewFlowerbedButton = QPushButton("View flowerbed")
-        self.viewFlowerbedButton.clicked.connect(self.temp)
-        self.viewFlowerbedButton.setFixedWidth(100)
-
-        self.addFlowerbedButton = QPushButton("Add new flowerbed")
-        self.addFlowerbedButton.clicked.connect(self.temp)
-        self.addFlowerbedButton.setFixedWidth(120)
-        
-        self.layout1.addWidget(self.flowerbedLabel)
-        self.layout1.addWidget(self.flowerbedsComboBox)
-        self.layout1.addWidget(self.viewFlowerbedButton)
-        self.layout1.addWidget(self.addFlowerbedButton)
-        self.layout1.setAlignment(Qt.AlignTop)
-
-
-        #layout 2
-        self.flowerbedQuery = QSqlQuery()
-        self.flowerbedQuery.prepare("""SELECT plantGrowing, datePlanted, waterNeed FROM Plant
-                                       WHERE FlowerbedID = ?""")
-        self.flowerbedQuery.addBindValue(CurrentFlowerbedID)
-        self.flowerbedQuery.exec_()
-        self.flowerbedModel = QSqlQueryModel()
-        self.flowerbedModel.setQuery(self.flowerbedQuery)
-        self.flowerbedTableView = QTableView()
-        self.flowerbedTableView.setModel(self.flowerbedModel)
-
-        self.flowerbedTableView.setFixedWidth(334)
-        self.flowerbedTableView.setMinimumHeight(112)
-        
-        self.layout2.addWidget(self.flowerbedTableView)
-        self.layout2.setAlignment(Qt.AlignLeft)
-        self.layout2.setAlignment(Qt.AlignTop)
-
-
-        #layout 3
-        self.timeframeLabel = QLabel("Timeframe")
-        self.timeframeLabel.setFont(self.titleFont)
-        self.timeframeLabel.setFixedWidth(100)
-
-        self.timeframeComboBox = QComboBox()
-        self.timeframeComboBox.addItem("24 hours")
-        self.timeframeComboBox.addItem("7 days")
-        self.timeframeComboBox.addItem("30 days")
-        self.timeframeComboBox.addItem("6 months")
-        self.timeframeComboBox.addItem("1 year")
-        self.timeframeComboBox.addItem("all time")
-        self.timeframeComboBox.setFixedWidth(80)
-
-        self.layout3.addWidget(self.timeframeLabel)
-        self.layout3.addWidget(self.timeframeComboBox)
-        self.layout3.setAlignment(Qt.AlignTop)
-
-        #layout 4
-        self.operationQuery = QSqlQuery()
-        self.operationQuery.prepare("""SELECT date, time, duration, amount, cost FROM Operation
-                                       WHERE FlowerbedID = ?""")
-        self.operationQuery.addBindValue(CurrentFlowerbedID)
-        self.operationQuery.exec_()
-        self.operationModel = QSqlQueryModel()
-        self.operationModel.setQuery(self.operationQuery)
-        self.operationTableView = QTableView()
-        self.operationTableView.setModel(self.operationModel)
-
-        #self.operationTableView.setFixedWidth(534)
-        self.operationTableView.setMinimumHeight(112)
-        
-        self.layout4.addWidget(self.operationTableView)
-        self.layout4.setAlignment(Qt.AlignLeft)
-        self.layout4.setAlignment(Qt.AlignTop)
-
-        
-        #flowerbed links
-        linked = ["x","y","z"]
-        self.flowerbedLinks = QLabel("This flowerbed is currently linked to moisture sensors number {0}, {1} and {2}.".format(linked[0],linked[1],linked[2]))
-        self.infoFont = QFont()
-        self.infoFont.setPointSize(8)
-        self.flowerbedLinks.setFont(self.infoFont)
-        self.flowerbedLinks.setAlignment(Qt.AlignBottom)
-        
-        #add layouts
-        self.flowerbeds_layout.addLayout(self.layout1)
-        self.flowerbeds_layout.addLayout(self.layout2)
-        self.flowerbeds_layout.addLayout(self.layout3)
-        self.flowerbeds_layout.addLayout(self.layout4)
-        self.flowerbeds_layout.addWidget(self.flowerbedLinks)
-
-        self.flowerbeds_layout_widget = QWidget()
-        self.flowerbeds_layout_widget.setLayout(self.flowerbeds_layout)
-
     def create_windows(self):
-        self.create_initial_layout()
-        self.create_flowerbeds_layout()
+        self.initial_layout_widget = InitialLayoutWindow.create_initial_layout(self)
+        self.flowerbeds_layout_widget = FlowerbedsWindow.create_flowerbeds_layout(self)
+
+    def add_windows(self):
+        self.stackedLayout.addWidget(self.initial_layout_widget)
+        self.stackedLayout.addWidget(self.flowerbeds_layout_widget)
 
     def flowerbeds_view(self):
-        self.stackedLayout.addWidget(self.flowerbeds_layout_widget)
         self.stackedLayout.setCurrentIndex(1)
         
     
