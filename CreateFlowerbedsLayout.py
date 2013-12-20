@@ -18,7 +18,7 @@ class FlowerbedsWindow(QMainWindow):
         self.db.open()
 
         self.create_flowerbeds_layout()
-        self.flowerbeds_layout_widget.setMinimumSize(QSize(600,350))
+        self.flowerbeds_layout_widget.setMinimumSize(QSize(800,450))
         self.stackedLayout.addWidget(self.flowerbeds_layout_widget)
 
         self.central_widget = QWidget()
@@ -27,13 +27,15 @@ class FlowerbedsWindow(QMainWindow):
         
 
     def create_flowerbeds_layout(self):
+        CurrentFlowerbedID = 1
         with sqlite3.connect("FlowerbedDatabase.db") as db2:
             self.cursor = db2.cursor()
-            self.cursor.execute("select * from Plant")
-            thePlants = self.cursor.fetchall()
-            numPlants = len(thePlants)
+            values = (CurrentFlowerbedID,)
+            self.cursor.execute("select * from Plant where flowerbedID = ?", values)
+            numPlants = len(self.cursor.fetchall())
+            self.cursor.execute("select * from Operation where flowerbedID = ?", values)
+            numOperations = len(self.cursor.fetchall())
             
-        CurrentFlowerbedID = 1
         flowerbedList = ["1","2","3","4","5"]
         self.flowerbeds_layout = QVBoxLayout()
 
@@ -75,7 +77,11 @@ class FlowerbedsWindow(QMainWindow):
         #layout 2
         maxHeight1 = 115 + 30 * (numPlants - 3)
         self.flowerbedQuery = QSqlQuery()
-        self.flowerbedQuery.prepare("""SELECT plantGrowing, datePlanted, waterNeed FROM Plant
+        self.flowerbedQuery.prepare("""SELECT
+                                       plantGrowing as "Plant",
+                                       datePlanted as "Date Planted",
+                                       waterNeed as "Water Need"
+                                       FROM Plant
                                        WHERE FlowerbedID = ?""")
         self.flowerbedQuery.addBindValue(CurrentFlowerbedID)
         self.flowerbedQuery.exec_()
@@ -112,9 +118,18 @@ class FlowerbedsWindow(QMainWindow):
         self.layout3.setAlignment(Qt.AlignTop)
 
         #layout 4
+        maxHeight2 = 115 + 30 * (numOperations - 3)
         self.operationQuery = QSqlQuery()
-        self.operationQuery.prepare("""SELECT date, time, duration, amount, cost FROM Operation
-                                       WHERE FlowerbedID = ?""")
+        self.operationQuery.prepare("""SELECT
+                                       Operation.date as "Date",
+                                       Operation.time as "Time",
+                                       Operation.duration as "Duration (s)",
+                                       Operation.amount as "Amount (L)",
+                                       Operation.cost as "Cost (£)",
+                                       Reading.reading(readingBeforeID) as "1st Reading",
+                                       Reading.reading(readingAfterID) as "2nd Reading"
+                                       FROM Operation, Reading
+                                       WHERE Operation.FlowerbedID = ?""")
         self.operationQuery.addBindValue(CurrentFlowerbedID)
         self.operationQuery.exec_()
         self.operationModel = QSqlQueryModel()
@@ -122,8 +137,9 @@ class FlowerbedsWindow(QMainWindow):
         self.operationTableView = QTableView()
         self.operationTableView.setModel(self.operationModel)
 
-        self.operationTableView.setFixedWidth(534)
+        self.operationTableView.setFixedWidth(724)
         self.operationTableView.setMinimumHeight(112)
+        self.operationTableView.setMaximumHeight(maxHeight2)
         
         self.layout4.addWidget(self.operationTableView)
         self.layout4.setAlignment(Qt.AlignLeft)

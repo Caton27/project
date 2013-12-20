@@ -22,7 +22,8 @@ def sql_statements():
                   valveID Integer,
                   flowerbedID Integer,
                   primary key(valveID),
-                  foreign key(FlowerbedID) references Flowerbed(flowerbedID))""")
+                  foreign key(FlowerbedID) references Flowerbed(flowerbedID)
+                  on update cascade on delete restrict)""")
     sqls.append("""create table Plant(
                   plantID Integer,
                   plantGrowing Text,
@@ -30,7 +31,8 @@ def sql_statements():
                   waterNeed Float,
                   flowerbedID Integer,
                   primary key(plantID),
-                  foreign key(flowerbedID) references Flowerbed(flowerbedID))""")
+                  foreign key(flowerbedID) references Flowerbed(flowerbedID)
+                  on update cascade on delete restrict)""")
     sqls.append("""create table Sensor_Type(
                   sensorTypeID Integer,
                   sensorType Text,
@@ -40,8 +42,10 @@ def sql_statements():
                   sensorTypeID Integer,
                   flowerbedID Integer,
                   primary key(sensorID),
-                  foreign key(sensorTypeID) references Sensor_Type(sensorTypeID),
-                  foreign key(flowerbedID) references Flowerbed(flowerbedID))""")
+                  foreign key(sensorTypeID) references Sensor_Type(sensorTypeID)
+                  on update cascade on delete restrict,
+                  foreign key(flowerbedID) references Flowerbed(flowerbedID)
+                  on update cascade on delete restrict)""")
     sqls.append("""create table Reading_Type(
                   readingTypeID Integer,
                   readingType Text,
@@ -54,8 +58,10 @@ def sql_statements():
                   sensorID Integer,
                   readingTypeID Integer,
                   primary key(readingID),
-                  foreign key(sensorID) references Sensor(sensorID),
-                  foreign key(readingTypeID) references Reading_Type(readingTypeID))""")
+                  foreign key(sensorID) references Sensor(sensorID)
+                  on update cascade on delete restrict,
+                  foreign key(readingTypeID) references Reading_Type(readingTypeID)
+                  on update cascade on delete restrict)""")
     sqls.append("""create table Operation(
                   operationID Integer,
                   date Text,
@@ -68,10 +74,14 @@ def sql_statements():
                   valveID Integer,
                   flowerbedID Integer,
                   primary key(operationID),
-                  foreign key(readingBeforeID) references Reading(readingID),
-                  foreign key(readingAfterID) references Reading(readingID),
-                  foreign key(valveID) references Valve(valveID),
-                  foreign key(flowerbedID) references Flowerbed(flowerbedID))""")
+                  foreign key(readingBeforeID) references Reading(readingID)
+                  on update cascade on delete restrict,
+                  foreign key(readingAfterID) references Reading(readingID)
+                  on update cascade on delete restrict,
+                  foreign key(valveID) references Valve(valveID)
+                  on update cascade on delete restrict,
+                  foreign key(flowerbedID) references Flowerbed(flowerbedID)
+                  on update cascade on delete restrict)""")
     return sqls
 
 
