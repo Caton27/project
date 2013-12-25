@@ -124,8 +124,8 @@ class MainWindow(QMainWindow):
         pass
 
     def create_windows(self):
-        self.initial_layout_widget = InitialLayoutWindow.create_initial_layout(self)
-        self.flowerbeds_layout_widget = FlowerbedsWindow.create_flowerbeds_layout(self)
+        self.initial_layout_widget = InitialLayoutWindow()
+        self.flowerbeds_layout_widget = FlowerbedsWindow()
 
     def add_windows(self):
         self.stackedLayout.addWidget(self.initial_layout_widget)

@@ -24,19 +24,17 @@ class FlowerbedsWindow(QMainWindow):
         self.central_widget = QWidget()
         self.central_widget.setLayout(self.stackedLayout)
         self.setCentralWidget(self.central_widget)
-        
+
 
     def create_flowerbeds_layout(self):
-        CurrentFlowerbedID = 1
         with sqlite3.connect("FlowerbedDatabase.db") as db2:
             self.cursor = db2.cursor()
-            values = (CurrentFlowerbedID,)
-            self.cursor.execute("select * from Plant where flowerbedID = ?", values)
-            numPlants = len(self.cursor.fetchall())
-            self.cursor.execute("select * from Operation where flowerbedID = ?", values)
-            numOperations = len(self.cursor.fetchall())
-            
-        flowerbedList = ["1","2","3","4","5"]
+            self.cursor.execute("select flowerbedID from Flowerbed")
+            flowerbedList = []
+            for each1 in self.cursor.fetchall():
+                for each2 in each1:
+                    flowerbedList.append(each2)
+
         self.flowerbeds_layout = QVBoxLayout()
 
         self.layout1 = QHBoxLayout()
@@ -56,8 +54,9 @@ class FlowerbedsWindow(QMainWindow):
 
         self.flowerbedsComboBox = QComboBox()
         for each in flowerbedList:
-            self.flowerbedsComboBox.addItem(each)
+            self.flowerbedsComboBox.addItem(str(each))
         self.flowerbedsComboBox.setFixedWidth(30)
+        self.flowerbedsComboBox.currentIndexChanged.connect(self.select_flowerbed)
 
         self.viewFlowerbedButton = QPushButton("View flowerbed")
         self.viewFlowerbedButton.clicked.connect(self.temp)
@@ -73,26 +72,14 @@ class FlowerbedsWindow(QMainWindow):
         self.layout1.addWidget(self.addFlowerbedButton)
         self.layout1.setAlignment(Qt.AlignTop)
 
-
         #layout 2
-        maxHeight1 = 115 + 30 * (numPlants - 3)
-        self.flowerbedQuery = QSqlQuery()
-        self.flowerbedQuery.prepare("""SELECT
-                                       plantGrowing as "Plant",
-                                       datePlanted as "Date Planted",
-                                       waterNeed as "Water Need"
-                                       FROM Plant
-                                       WHERE FlowerbedID = ?""")
-        self.flowerbedQuery.addBindValue(CurrentFlowerbedID)
-        self.flowerbedQuery.exec_()
-        self.flowerbedModel = QSqlQueryModel()
-        self.flowerbedModel.setQuery(self.flowerbedQuery)
         self.flowerbedTableView = QTableView()
-        self.flowerbedTableView.setModel(self.flowerbedModel)
+        self.operationTableView = QTableView() #used in layout 4
+        self.select_flowerbed()
 
         self.flowerbedTableView.setFixedWidth(334)
         self.flowerbedTableView.setMinimumHeight(112)
-        self.flowerbedTableView.setMaximumHeight(maxHeight1)
+        self.flowerbedTableView.setMaximumHeight(self.maxHeight1)
         
         self.layout2.addWidget(self.flowerbedTableView)
         self.layout2.setAlignment(Qt.AlignLeft)
@@ -112,34 +99,16 @@ class FlowerbedsWindow(QMainWindow):
         self.timeframeComboBox.addItem("1 year")
         self.timeframeComboBox.addItem("all time")
         self.timeframeComboBox.setFixedWidth(80)
+        self.timeframeComboBox.currentIndexChanged.connect(self.select_timeframe)
 
         self.layout3.addWidget(self.timeframeLabel)
         self.layout3.addWidget(self.timeframeComboBox)
         self.layout3.setAlignment(Qt.AlignTop)
 
         #layout 4
-        maxHeight2 = 115 + 30 * (numOperations - 3)
-        self.operationQuery = QSqlQuery()
-        self.operationQuery.prepare("""SELECT
-                                       Operation.date as "Date",
-                                       Operation.time as "Time",
-                                       Operation.duration as "Duration (s)",
-                                       Operation.amount as "Amount (L)",
-                                       Operation.cost as "Cost (£)",
-                                       Reading.reading(readingBeforeID) as "1st Reading",
-                                       Reading.reading(readingAfterID) as "2nd Reading"
-                                       FROM Operation, Reading
-                                       WHERE Operation.FlowerbedID = ?""")
-        self.operationQuery.addBindValue(CurrentFlowerbedID)
-        self.operationQuery.exec_()
-        self.operationModel = QSqlQueryModel()
-        self.operationModel.setQuery(self.operationQuery)
-        self.operationTableView = QTableView()
-        self.operationTableView.setModel(self.operationModel)
-
         self.operationTableView.setFixedWidth(724)
         self.operationTableView.setMinimumHeight(112)
-        self.operationTableView.setMaximumHeight(maxHeight2)
+        self.operationTableView.setMaximumHeight(self.maxHeight2)
         
         self.layout4.addWidget(self.operationTableView)
         self.layout4.setAlignment(Qt.AlignLeft)
@@ -166,6 +135,84 @@ class FlowerbedsWindow(QMainWindow):
 
         return self.flowerbeds_layout_widget
 
+    def select_flowerbed(self):
+        self.currentFlowerbedID = self.flowerbedsComboBox.currentIndex() + 1
+        print(self.currentFlowerbedID)
+
+        with sqlite3.connect("FlowerbedDatabase.db") as db2:
+            self.cursor = db2.cursor()
+            values = (self.currentFlowerbedID,)
+            self.cursor.execute("select * from Plant where flowerbedID = ?", values)
+            self.numPlants = len(self.cursor.fetchall())
+
+        self.maxHeight1 = 115 + 30 * (self.numPlants - 3)
+        self.flowerbedQuery = QSqlQuery()
+        self.flowerbedQuery.prepare("""SELECT
+                                       plantGrowing as "Plant",
+                                       datePlanted as "Date Planted",
+                                       waterNeed as "Water Need"
+                                       FROM Plant
+                                       WHERE FlowerbedID = ?""")
+        self.flowerbedQuery.addBindValue(self.currentFlowerbedID)
+        self.flowerbedQuery.exec_()
+        self.flowerbedModel = QSqlQueryModel()
+        self.flowerbedModel.setQuery(self.flowerbedQuery)
+        self.flowerbedTableView.setModel(self.flowerbedModel)
+
+        with sqlite3.connect("FlowerbedDatabase.db") as db2:
+            self.cursor = db2.cursor()
+            values = (self.currentFlowerbedID,)
+            self.cursor.execute("select * from Operation where flowerbedID = ?", values)
+            self.numOperations = len(self.cursor.fetchall())
+            
+        self.maxHeight2 = 115 + 30 * (self.numOperations - 3)
+        self.operationQuery = QSqlQuery()
+        self.operationQuery.prepare("""SELECT
+                                       Operation.date as "Date",
+                                       Operation.time as "Time",
+                                       Operation.duration as "Duration (s)",
+                                       Operation.amount as "Amount (L)",
+                                       Operation.cost as "Cost (£)",
+                                       Reading.reading as "1st Reading"
+                                       FROM Operation, Reading
+                                       WHERE Operation.FlowerbedID = ?
+                                       AND Operation.readingBeforeID = Reading.readingID""")
+        self.operationQuery.addBindValue(self.currentFlowerbedID)
+        self.operationQuery.exec_()
+        self.operationModel = QSqlQueryModel()
+        self.operationModel.setQuery(self.operationQuery)
+        self.operationTableView.setModel(self.operationModel)
+
+
+    def select_timeframe(self):
+        self.currentTimeframe = self.timeframeComboBox.currentIndex()
+        print(self.currentTimeframe)
+        
+        with sqlite3.connect("FlowerbedDatabase.db") as db2:
+            self.cursor = db2.cursor()
+            values = (self.currentFlowerbedID,)
+            self.cursor.execute("select * from Operation where flowerbedID = ?", values)
+            self.numOperations = len(self.cursor.fetchall())
+            
+        self.maxHeight2 = 115 + 30 * (self.numOperations - 3)
+        self.operationQuery = QSqlQuery()
+        self.operationQuery.prepare("""SELECT
+                                       Operation.date as "Date",
+                                       Operation.time as "Time",
+                                       Operation.duration as "Duration (s)",
+                                       Operation.amount as "Amount (L)",
+                                       Operation.cost as "Cost (£)",
+                                       Reading.reading as "1st Reading"
+                                       FROM Operation, Reading
+                                       WHERE Operation.FlowerbedID = ?
+                                       AND Operation.readingBeforeID = Reading.readingID""")
+        self.operationQuery.addBindValue(self.currentFlowerbedID)
+        self.operationQuery.exec_()
+        self.operationModel = QSqlQueryModel()
+        self.operationModel.setQuery(self.operationQuery)
+        self.operationTableView.setModel(self.operationModel)
+
+        
     def temp(self):
         pass
 
