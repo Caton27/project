@@ -55,6 +55,7 @@ def sql_statements():
                   date Text,
                   time Text,
                   reading Float,
+                  averageReading Float,
                   sensorID Integer,
                   readingTypeID Integer,
                   primary key(readingID),

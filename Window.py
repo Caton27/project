@@ -2,8 +2,9 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtSql import *
 
-from CreateFlowerbedsLayout import *
 from CreateInitialLayout import *
+from CreateFlowerbedsLayout import *
+from CreateMoistureSensorsLayout import *
 
 import sys
 
@@ -41,7 +42,7 @@ class MainWindow(QMainWindow):
         #creating the moisture sensors action
         self.moistureSensorsAction = QAction(QIcon(), "Moisture Sensors", self)
         self.moistureSensorsAction.setStatusTip("View existing moisture sensors")
-        self.moistureSensorsAction.triggered.connect(self.temp)
+        self.moistureSensorsAction.triggered.connect(self.moisture_sensors_view)
 
         #creating the sunlight readings action
         self.sunlightReadingsAction = QAction(QIcon(), "Sunlight Readings", self)
@@ -126,13 +127,18 @@ class MainWindow(QMainWindow):
     def create_windows(self):
         self.initial_layout_widget = InitialLayoutWindow()
         self.flowerbeds_layout_widget = FlowerbedsWindow()
+        self.moisture_sensors_layout_widget = MoistureSensorsWindow()
 
     def add_windows(self):
         self.stackedLayout.addWidget(self.initial_layout_widget)
         self.stackedLayout.addWidget(self.flowerbeds_layout_widget)
+        self.stackedLayout.addWidget(self.moisture_sensors_layout_widget)
 
     def flowerbeds_view(self):
         self.stackedLayout.setCurrentIndex(1)
+
+    def moisture_sensors_view(self):
+        self.stackedLayout.setCurrentIndex(2)
         
     
 if __name__ == "__main__":
