@@ -18,7 +18,7 @@ class MoistureSensorsWindow(QMainWindow):
         self.db.open()
 
         self.create_moisture_sensors_layout()
-        self.moisture_sensors_layout_widget.setMinimumSize(QSize(600,350))
+##        self.moisture_sensors_layout_widget.setMinimumSize(QSize(600,350))
         self.stackedLayout.addWidget(self.moisture_sensors_layout_widget)
 
         self.central_widget = QWidget()
@@ -89,24 +89,13 @@ class MoistureSensorsWindow(QMainWindow):
         self.layout2.setAlignment(Qt.AlignLeft)
         self.layout2.setAlignment(Qt.AlignTop)
 
-        #flowerbed links
-        with sqlite3.connect("FlowerbedDatabase.db") as db2:
-            self.cursor = db2.cursor()
-            values = (self.currentMoistureSensorsID,)
-            self.cursor.execute("select flowerbedID from Sensor where sensorID = ?",values)
-            temp = self.cursor.fetchall()
-            for each in temp:
-                for each in each:
-                    linked1 = each
-        self.flowerbedLinks = QLabel("This moisture sensor is currently linked to flowerbed number {0}.".format(linked1))
+        #links
         self.infoFont = QFont()
         self.infoFont.setPointSize(8)
+        
+        self.get_linked()
         self.flowerbedLinks.setFont(self.infoFont)
         self.flowerbedLinks.setAlignment(Qt.AlignBottom)
-
-        #moisture sensor links
-        linked2 = ["y","z"]
-        self.moistureSensorLinks = QLabel("Moisture sensor numbers {0} and {1} are also linked to flowerbed number {2}.".format(linked2[0],linked2[1],linked1))
         self.moistureSensorLinks.setFont(self.infoFont)
         self.moistureSensorLinks.setAlignment(Qt.AlignBottom)
         
@@ -145,8 +134,34 @@ class MoistureSensorsWindow(QMainWindow):
         self.moistureSensorsModel = QSqlQueryModel()
         self.moistureSensorsModel.setQuery(self.moistureSensorsQuery)
         self.moistureSensorsTableView.setModel(self.moistureSensorsModel)
+        self.get_linked()
 
+
+#works initially, but doesn't update when self.currentMoistureSensorID is changed
+    def get_linked(self):
+        with sqlite3.connect("FlowerbedDatabase.db") as db2:
+            self.cursor = db2.cursor()
+            values = (self.currentMoistureSensorsID,)
+            self.cursor.execute("select flowerbedID from Sensor where sensorID = ?",values)
+            temp = self.cursor.fetchall()
+            for each in temp:
+                for each in each:
+                    self.linked1 = each
+        self.flowerbedLinks = QLabel("This moisture sensor is currently linked to flowerbed number {0}.".format(self.linked1))
         
+        with sqlite3.connect("FlowerbedDatabase.db") as db2:
+            self.cursor = db2.cursor()
+            values = (self.linked1,)
+            self.cursor.execute("select sensorID from Sensor where flowerbedID = ?",values)
+            temp = self.cursor.fetchall()
+            self.linked2 = []
+            for each in temp:
+                for each in each:
+                    if str(each) != str(self.currentMoistureSensorsID):
+                        self.linked2.append(each)
+        self.moistureSensorLinks = QLabel("Moisture sensor numbers {0} and {1} are also linked to flowerbed number {2}.".format(self.linked2[0],self.linked2[1],self.linked1))
+
+    
     def temp(self):
         pass
 

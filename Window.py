@@ -131,7 +131,7 @@ class MainWindow(QMainWindow):
 
     def add_windows(self):
         self.stackedLayout.addWidget(self.initial_layout_widget)
-        self.stackedLayout.addWidget(self.flowerbeds_layout_widget)
+        self.stackedLayout.addWidget(self.flowerbeds_layout_widget)   
         self.stackedLayout.addWidget(self.moisture_sensors_layout_widget)
 
     def flowerbeds_view(self):
@@ -139,6 +139,7 @@ class MainWindow(QMainWindow):
 
     def moisture_sensors_view(self):
         self.stackedLayout.setCurrentIndex(2)
+        
         
     
 if __name__ == "__main__":

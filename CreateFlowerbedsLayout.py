@@ -18,7 +18,7 @@ class FlowerbedsWindow(QMainWindow):
         self.db.open()
 
         self.create_flowerbeds_layout()
-        self.flowerbeds_layout_widget.setMinimumSize(QSize(800,450))
+##        self.flowerbeds_layout_widget.setMinimumSize(QSize(800,450))
         self.stackedLayout.addWidget(self.flowerbeds_layout_widget)
 
         self.central_widget = QWidget()
@@ -58,18 +58,16 @@ class FlowerbedsWindow(QMainWindow):
         self.flowerbedsComboBox.setFixedWidth(30)
         self.flowerbedsComboBox.currentIndexChanged.connect(self.select_flowerbed)
 
-        self.viewFlowerbedButton = QPushButton("View flowerbed")
-        self.viewFlowerbedButton.clicked.connect(self.temp)
-        self.viewFlowerbedButton.setFixedWidth(100)
-
         self.addFlowerbedButton = QPushButton("Add new flowerbed")
-        self.addFlowerbedButton.clicked.connect(self.temp)
+        self.addFlowerbedButton.clicked.connect(self.add_flowerbed)
         self.addFlowerbedButton.setFixedWidth(120)
+        self.flowerbedButtonLayout = QHBoxLayout()
+        self.flowerbedButtonLayout.addWidget(self.addFlowerbedButton)
+        self.flowerbedButtonLayout.setAlignment(Qt.AlignRight)
         
         self.layout1.addWidget(self.flowerbedLabel)
         self.layout1.addWidget(self.flowerbedsComboBox)
-        self.layout1.addWidget(self.viewFlowerbedButton)
-        self.layout1.addWidget(self.addFlowerbedButton)
+        self.layout1.addLayout(self.flowerbedButtonLayout)
         self.layout1.setAlignment(Qt.AlignTop)
 
         #layout 2
@@ -116,8 +114,7 @@ class FlowerbedsWindow(QMainWindow):
 
         
         #flowerbed links
-        linked = ["x","y","z"]
-        self.flowerbedLinks = QLabel("This flowerbed is currently linked to moisture sensors number {0}, {1} and {2}.".format(linked[0],linked[1],linked[2]))
+        self.get_linked()
         self.infoFont = QFont()
         self.infoFont.setPointSize(8)
         self.flowerbedLinks.setFont(self.infoFont)
@@ -204,7 +201,7 @@ class FlowerbedsWindow(QMainWindow):
                                        Operation.cost as "Cost (£)",
                                        Reading.reading as "1st Reading"
                                        FROM Operation, Reading
-                                       WHERE Operation.FlowerbedID = ?
+                                       WHERE Operation.flowerbedID = ?
                                        AND Operation.readingBeforeID = Reading.readingID""")
         self.operationQuery.addBindValue(self.currentFlowerbedID)
         self.operationQuery.exec_()
@@ -212,6 +209,28 @@ class FlowerbedsWindow(QMainWindow):
         self.operationModel.setQuery(self.operationQuery)
         self.operationTableView.setModel(self.operationModel)
 
+#works initially, but doesn't update when self.currentFlowerbedID is changed
+    def get_linked(self):
+        with sqlite3.connect("FlowerbedDatabase.db") as db2:
+            self.cursor = db2.cursor()
+            values = (self.currentFlowerbedID,)
+            self.cursor.execute("select sensorID from Sensor where flowerbedID = ? and sensorTypeID = 1",values)
+            temp = self.cursor.fetchall()
+            self.linked = []
+            for each in temp:
+                for each in each:
+                    self.linked.append(each)
+            while len(self.linked) < 3:
+                self.linked.append("<N/A>")
+        self.flowerbedLinks = QLabel("This flowerbed is currently linked to moisture sensors number {0}, {1} and {2}.".format(self.linked[0],self.linked[1],self.linked[2]))
+
+
+    def add_flowerbed(self):
+        pass
+##        with sqlite3.connect("FlowerbedDatabase.db") as db2:
+##            self.cursor = db2.cursor()
+##            self.cursor.execute("insert into Flowerbed(flowerbedID)")
+##            db.commit()
         
     def temp(self):
         pass
