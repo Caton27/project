@@ -4,6 +4,7 @@ from PyQt4.QtSql import *
 
 import sqlite3
 import sys
+import datetime
 
 class FlowerbedsWindow(QMainWindow):
     """Window"""
@@ -182,8 +183,25 @@ class FlowerbedsWindow(QMainWindow):
 
 
     def select_timeframe(self):
+        #i got datetime
+        #i got sqlite
+        #cant smush em together though :(
         self.currentTimeframe = self.timeframeComboBox.currentIndex()
-        print(self.currentTimeframe)
+        if self.currentTimeframe == 0:
+            self.comparisonDate = datetime.timedelta(1)
+        elif self.currentTimeframe == 1:
+            self.comparisonDate = datetime.timedelta(7)
+        elif self.currentTimeframe == 2:
+            self.comparisonDate = datetime.timedelta(30)
+        elif self.currentTimeframe == 3:
+            self.comparisonDate = datetime.timedelta(183)
+        elif self.currentTimeframe == 4:
+            self.comparisonDate = datetime.timedelta(365)
+        elif self.currentTimeframe == 5:
+            self.comparisonDate = datetime.timedelta.max
+        else:
+            pass
+        print(self.comparisonDate)
         
         with sqlite3.connect("FlowerbedDatabase.db") as db2:
             self.cursor = db2.cursor()

@@ -4,6 +4,7 @@ from PyQt4.QtSql import *
 
 import sqlite3
 import sys
+import datetime
 
 class MoistureSensorsWindow(QMainWindow):
     """Window"""
@@ -18,7 +19,6 @@ class MoistureSensorsWindow(QMainWindow):
         self.db.open()
 
         self.create_moisture_sensors_layout()
-##        self.moisture_sensors_layout_widget.setMinimumSize(QSize(600,350))
         self.stackedLayout.addWidget(self.moisture_sensors_layout_widget)
 
         self.central_widget = QWidget()
@@ -68,7 +68,7 @@ class MoistureSensorsWindow(QMainWindow):
         self.timeframeComboBox.addItem("1 year")
         self.timeframeComboBox.addItem("all time")
         self.timeframeComboBox.setFixedWidth(80)
-        self.timeframeComboBox.currentIndexChanged.connect(self.select_moisture_sensors)
+        self.timeframeComboBox.currentIndexChanged.connect(self.select_timeframe)
 
 
         self.layout1.addWidget(self.moistureSensorsLabel,0,1)
@@ -136,6 +136,47 @@ class MoistureSensorsWindow(QMainWindow):
         self.moistureSensorsTableView.setModel(self.moistureSensorsModel)
         self.get_linked()
 
+    def select_timeframe(self):
+        #i got datetime
+        #i got sqlite
+        #cant smush em together though :(
+        self.currentTimeframe = self.timeframeComboBox.currentIndex()
+        if self.currentTimeframe == 0:
+            self.comparisonDate = datetime.timedelta(1)
+        elif self.currentTimeframe == 1:
+            self.comparisonDate = datetime.timedelta(7)
+        elif self.currentTimeframe == 2:
+            self.comparisonDate = datetime.timedelta(30)
+        elif self.currentTimeframe == 3:
+            self.comparisonDate = datetime.timedelta(183)
+        elif self.currentTimeframe == 4:
+            self.comparisonDate = datetime.timedelta(365)
+        elif self.currentTimeframe == 5:
+            self.comparisonDate = datetime.timedelta.max
+        else:
+            pass
+        print(self.comparisonDate)
+        
+        with sqlite3.connect("FlowerbedDatabase.db") as db2:
+            self.cursor = db2.cursor()
+            values = (self.currentMoistureSensorsID,)
+            self.cursor.execute("select * from Reading where sensorID = ?", values)
+            self.numOperations = len(self.cursor.fetchall())
+            
+        self.maxHeight1 = 115 + 30 * (self.numOperations - 3)
+        self.moistureSensorsQuery = QSqlQuery()
+        self.moistureSensorsQuery.prepare("""SELECT
+                                       date as "Date",
+                                       time as "Time",
+                                       reading as "Reading",
+                                       averageReading as "Average Reading"
+                                       FROM Reading
+                                       WHERE SensorID = ?""")
+        self.moistureSensorsQuery.addBindValue(self.currentMoistureSensorsID)
+        self.moistureSensorsQuery.exec_()
+        self.moistureSensorsModel = QSqlQueryModel()
+        self.moistureSensorsModel.setQuery(self.moistureSensorsQuery)
+        self.moistureSensorsTableView.setModel(self.moistureSensorsModel)
 
 #works initially, but doesn't update when self.currentMoistureSensorID is changed
     def get_linked(self):
