@@ -5,6 +5,8 @@ from PyQt4.QtSql import *
 from CreateInitialLayout import *
 from CreateFlowerbedsLayout import *
 from CreateMoistureSensorsLayout import *
+from CreateSunlightReadingsLayout import *
+from CreateRainfallReadingsLayout import *
 
 import sys
 
@@ -47,12 +49,12 @@ class MainWindow(QMainWindow):
         #creating the sunlight readings action
         self.sunlightReadingsAction = QAction(QIcon(), "Sunlight Readings", self)
         self.sunlightReadingsAction.setStatusTip("View past sunlight readings")
-        self.sunlightReadingsAction.triggered.connect(self.temp)
+        self.sunlightReadingsAction.triggered.connect(self.sunlight_view)
 
         #creating the rainfall readings action
-        self.rainfallReadingsAction = QAction(QIcon(), "Rainfall Sensors", self)
+        self.rainfallReadingsAction = QAction(QIcon(), "Rainfall Readings", self)
         self.rainfallReadingsAction.setStatusTip("View past rainfall readings")
-        self.rainfallReadingsAction.triggered.connect(self.temp)
+        self.rainfallReadingsAction.triggered.connect(self.rainfall_view)
 
         #creating the volumetrics action
         self.volumetricsAction = QAction(QIcon(), "Volumetrics", self)
@@ -128,17 +130,27 @@ class MainWindow(QMainWindow):
         self.initial_layout_widget = InitialLayoutWindow()
         self.flowerbeds_layout_widget = FlowerbedsWindow()
         self.moisture_sensors_layout_widget = MoistureSensorsWindow()
+        self.sunlight_layout_widget = SunlightWindow()
+        self.rainfall_layout_widget = RainfallWindow()
 
     def add_windows(self):
         self.stackedLayout.addWidget(self.initial_layout_widget)
         self.stackedLayout.addWidget(self.flowerbeds_layout_widget)   
         self.stackedLayout.addWidget(self.moisture_sensors_layout_widget)
+        self.stackedLayout.addWidget(self.sunlight_layout_widget)
+        self.stackedLayout.addWidget(self.rainfall_layout_widget)
 
     def flowerbeds_view(self):
         self.stackedLayout.setCurrentIndex(1)
 
     def moisture_sensors_view(self):
         self.stackedLayout.setCurrentIndex(2)
+
+    def sunlight_view(self):
+        self.stackedLayout.setCurrentIndex(3)
+
+    def rainfall_view(self):
+        self.stackedLayout.setCurrentIndex(4)
         
         
     

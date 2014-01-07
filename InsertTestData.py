@@ -1,24 +1,5 @@
 import sqlite3
 
-def insert_data(values):
-    with sqlite3.connect("FlowerbedDatabase.db") as db:
-        cursor = db.cursor()
-        #sql = "insert into Operation(date, time, duration, amount, cost, readingBeforeID, readingAfterID, valveID, flowerbedID) values (?,?,?,?,?,?,?,?,?)"
-        cursor.execute(sql,values)
-        #sql = "insert into Plant(plantGrowing, datePlanted, waterNeed, flowerbedID) values (?,?,?,?)"
-        cursor.execute(sql,values)
-        #sql = "insert into Reading(readingID, date, time, reading, sensorID, readingTypeID) values (?,?,?,?,?,?)"
-        cursor.execute(sql,values)
-        #sql = "insert into Sensor_Type(sensorTypeID, sensorType) values (?,?)"
-        cursor.execute(sql,values)
-        #sql = "insert into Reading_Type(readingTypeID, readingType) values (?,?)"
-        cursor.execute(sql,values)
-        #sql = "insert into Flowerbed(flowerbedID) values (?)"
-        cursor.execute(sql,values)
-        #sql = "insert into Valve(valveID, flowerbedID) values (?,?)"
-        cursor.execute(sql,values)
-        db.commit()
-
 if __name__ == "__main__":
     products = []
     products.append(("08/09/2013","17:40",27,25,3,1))
@@ -29,6 +10,38 @@ if __name__ == "__main__":
     products.append(("08/09/2013","17:40",32,25,4,1))
     products.append(("08/09/2013","17:40",33,25,5,1))
     products.append(("08/09/2013","17:40",34,25,5,1))
+    for each in products:
+        with sqlite3.connect("FlowerbedDatabase.db") as db:
+            cursor = db.cursor()
+            sql = "insert into Reading(date, time, reading, averageReading, sensorID, readingTypeID) values (?,?,?,?,?,?)"
+            cursor.execute(sql,each)
+            db.commit()
+
+    products = []
+    products.append(("08/09/2013","17:40",0.3,250,2,3))
+    products.append(("09/09/2013","17:40",0.5,500,2,3))
+    products.append(("10/09/2013","17:40",1.7,750,2,3))
+    products.append(("25/12/2013","17:40",0.1,1000,2,3))
+    products.append(("01/01/2014","17:40",0.5,1250,2,3))
+    products.append(("03/01/2014","17:40",0.8,1500,2,3))
+    products.append(("07/01/2014","09:40",0.1,1750,2,3))
+    products.append(("08/09/2011","17:40",2.1,2000,2,3))
+    for each in products:
+        with sqlite3.connect("FlowerbedDatabase.db") as db:
+            cursor = db.cursor()
+            sql = "insert into Reading(date, time, reading, averageReading, sensorID, readingTypeID) values (?,?,?,?,?,?)"
+            cursor.execute(sql,each)
+            db.commit()
+
+    products = []
+    products.append(("08/09/2013","",0.3,0,1,2))
+    products.append(("09/09/2013","",0.5,0,1,2))
+    products.append(("10/09/2013","",1.7,0,1,2))
+    products.append(("25/12/2013","",0.1,0,1,2))
+    products.append(("01/01/2014","",0.5,0,1,2))
+    products.append(("03/01/2014","",0.8,0,1,2))
+    products.append(("07/01/2014","",0.1,0,1,2))
+    products.append(("08/09/2011","",2.1,0,1,2))
     for each in products:
         with sqlite3.connect("FlowerbedDatabase.db") as db:
             cursor = db.cursor()
@@ -90,8 +103,7 @@ if __name__ == "__main__":
     products = []
     products.append((1,"Moisture"))
     products.append((2,"Intensity"))
-    products.append((3,"Depth"))
-    products.append((4,"Duration"))
+    products.append((3,"Rainfall"))
     for each in products:
         with sqlite3.connect("FlowerbedDatabase.db") as db:
             cursor = db.cursor()
@@ -147,3 +159,4 @@ if __name__ == "__main__":
             sql = "insert into Sensor(sensorTypeID, flowerbedID) values(?,?)"
             cursor.execute(sql,each)
             db.commit()
+

@@ -19,7 +19,6 @@ class FlowerbedsWindow(QMainWindow):
         self.db.open()
 
         self.create_flowerbeds_layout()
-##        self.flowerbeds_layout_widget.setMinimumSize(QSize(800,450))
         self.stackedLayout.addWidget(self.flowerbeds_layout_widget)
 
         self.central_widget = QWidget()
@@ -37,7 +36,6 @@ class FlowerbedsWindow(QMainWindow):
                     flowerbedList.append(each2)
 
         self.flowerbeds_layout = QVBoxLayout()
-
         self.layout1 = QHBoxLayout()
         self.layout2 = QHBoxLayout()
         self.layout3 = QHBoxLayout()
@@ -135,7 +133,6 @@ class FlowerbedsWindow(QMainWindow):
 
     def select_flowerbed(self):
         self.currentFlowerbedID = self.flowerbedsComboBox.currentIndex() + 1
-        print(self.currentFlowerbedID)
 
         with sqlite3.connect("FlowerbedDatabase.db") as db2:
             self.cursor = db2.cursor()
@@ -183,9 +180,7 @@ class FlowerbedsWindow(QMainWindow):
 
 
     def select_timeframe(self):
-        #i got datetime
-        #i got sqlite
-        #cant smush em together though :(
+        #datetime & SQLite
         self.currentTimeframe = self.timeframeComboBox.currentIndex()
         if self.currentTimeframe == 0:
             self.comparisonDate = datetime.timedelta(1)
@@ -227,7 +222,7 @@ class FlowerbedsWindow(QMainWindow):
         self.operationModel.setQuery(self.operationQuery)
         self.operationTableView.setModel(self.operationModel)
 
-#works initially, but doesn't update when self.currentFlowerbedID is changed
+    #works initially, but doesn't update when self.currentFlowerbedID is changed
     def get_linked(self):
         with sqlite3.connect("FlowerbedDatabase.db") as db2:
             self.cursor = db2.cursor()

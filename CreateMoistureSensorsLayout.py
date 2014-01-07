@@ -112,7 +112,6 @@ class MoistureSensorsWindow(QMainWindow):
 
     def select_moisture_sensors(self):
         self.currentMoistureSensorsID = self.moistureSensorsComboBox.currentIndex() + 3
-        print(self.currentMoistureSensorsID)
 
         with sqlite3.connect("FlowerbedDatabase.db") as db2:
             self.cursor = db2.cursor()
@@ -137,9 +136,7 @@ class MoistureSensorsWindow(QMainWindow):
         self.get_linked()
 
     def select_timeframe(self):
-        #i got datetime
-        #i got sqlite
-        #cant smush em together though :(
+        #datetime & SQLite
         self.currentTimeframe = self.timeframeComboBox.currentIndex()
         if self.currentTimeframe == 0:
             self.comparisonDate = datetime.timedelta(1)
