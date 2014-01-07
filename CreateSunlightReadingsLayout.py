@@ -35,7 +35,6 @@ class SunlightWindow(QMainWindow):
         self.sunlight_layout = QVBoxLayout()
         self.layout1 = QHBoxLayout()
         self.layout2 = QHBoxLayout()
-        self.layout3 = QHBoxLayout()
 
         self.titleFont = QFont()
         self.titleFont.setPointSize(13)
@@ -68,17 +67,17 @@ class SunlightWindow(QMainWindow):
 
         self.select_timeframe()
 
+        #################
+        #*****GRAPH*****#
+        #*****GRAPH*****#
+        #*****GRAPH*****#
+        #*****GRAPH*****#
+        #################
+
         self.layout2.addWidget(self.sunlightTableView)
         self.layout2.setAlignment(Qt.AlignLeft)
         self.layout2.setAlignment(Qt.AlignTop)
 
-        #layout 3
-        #################
-        #*****GRAPH*****#
-        #*****GRAPH*****#
-        #*****GRAPH*****#
-        #*****GRAPH*****#
-        #################
 
         #add layouts
         self.sunlight_layout.addLayout(self.layout1)
