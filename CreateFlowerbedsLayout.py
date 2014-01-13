@@ -71,8 +71,15 @@ class FlowerbedsWindow(QMainWindow):
 
         #layout 2
         self.flowerbedTableView = QTableView()
-        self.operationTableView = QTableView() #used in layout 4
-        self.select_flowerbed()
+        ###############################################################
+        ###############################################################
+        ###############################################################
+        ###############################################################
+        ###############################################################
+        ###############################################################
+        ###############################################################
+        ###############################################################
+        ###############################################################
 
         self.flowerbedTableView.setFixedWidth(334)
         self.flowerbedTableView.setMinimumHeight(112)
@@ -97,15 +104,18 @@ class FlowerbedsWindow(QMainWindow):
         self.timeframeComboBox.addItem("all time")
         self.timeframeComboBox.setFixedWidth(80)
         self.timeframeComboBox.currentIndexChanged.connect(self.select_timeframe)
-
+        
         self.layout3.addWidget(self.timeframeLabel)
         self.layout3.addWidget(self.timeframeComboBox)
         self.layout3.setAlignment(Qt.AlignTop)
 
         #layout 4
+        self.operationTableView = QTableView()
+        
         self.operationTableView.setFixedWidth(724)
         self.operationTableView.setMinimumHeight(112)
         self.operationTableView.setMaximumHeight(self.maxHeight2)
+        self.select_timeframe()
         
         self.layout4.addWidget(self.operationTableView)
         self.layout4.setAlignment(Qt.AlignLeft)
@@ -133,7 +143,7 @@ class FlowerbedsWindow(QMainWindow):
 
     def select_flowerbed(self):
         self.currentFlowerbedID = self.flowerbedsComboBox.currentIndex() + 1
-
+        
         with sqlite3.connect("FlowerbedDatabase.db") as db2:
             self.cursor = db2.cursor()
             values = (self.currentFlowerbedID,)
@@ -153,14 +163,9 @@ class FlowerbedsWindow(QMainWindow):
         self.flowerbedModel = QSqlQueryModel()
         self.flowerbedModel.setQuery(self.flowerbedQuery)
         self.flowerbedTableView.setModel(self.flowerbedModel)
-
-        with sqlite3.connect("FlowerbedDatabase.db") as db2:
-            self.cursor = db2.cursor()
-            values = (self.currentFlowerbedID,)
-            self.cursor.execute("select * from Operation where flowerbedID = ?", values)
-            self.numOperations = len(self.cursor.fetchall())
+        
+        self.select_timeframe() 
             
-        self.maxHeight2 = 115 + 30 * (self.numOperations - 3)
         self.operationQuery = QSqlQuery()
         self.operationQuery.prepare("""SELECT
                                        Operation.date as "Date",
@@ -189,22 +194,35 @@ class FlowerbedsWindow(QMainWindow):
         elif self.currentTimeframe == 2:
             self.comparisonDate = datetime.timedelta(30)
         elif self.currentTimeframe == 3:
-            self.comparisonDate = datetime.timedelta(183)
+            self.comparisonDate = datetime.timedelta(122) #should be 183
         elif self.currentTimeframe == 4:
             self.comparisonDate = datetime.timedelta(365)
         elif self.currentTimeframe == 5:
-            self.comparisonDate = datetime.timedelta.max
+            self.comparisonDate = datetime.timedelta(99999)
         else:
             pass
-        print(self.comparisonDate)
         
+        print(self.comparisonDate)
         with sqlite3.connect("FlowerbedDatabase.db") as db2:
             self.cursor = db2.cursor()
             values = (self.currentFlowerbedID,)
             self.cursor.execute("select * from Operation where flowerbedID = ?", values)
-            self.numOperations = len(self.cursor.fetchall())
-            
+            temp = self.cursor.fetchall()
+            theDate = datetime.datetime.now()
+            comDate = theDate - self.comparisonDate
+            temp2 = 0
+            for each in temp:
+                newDate = each[1]
+                newTime = each[2]
+                newDate = datetime.datetime(int(newDate[6:10]),int(newDate[3:5]),int(newDate[0:2]),int(newTime[0:2]),int(newTime[3:5]))
+                if newDate < comDate:
+                    temp2 += 1
+            #temp2 is the number of operations within the given timeframe
+            print(temp2)
+            self.numOperations = temp2
+             
         self.maxHeight2 = 115 + 30 * (self.numOperations - 3)
+        self.operationTableView.setMaximumHeight(self.maxHeight2)
         self.operationQuery = QSqlQuery()
         self.operationQuery.prepare("""SELECT
                                        Operation.date as "Date",
