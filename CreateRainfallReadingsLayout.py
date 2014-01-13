@@ -66,7 +66,18 @@ class RainfallWindow(QMainWindow):
         self.rainfallTableView.setMinimumHeight(112)
         self.rainfallTableView.setMaximumHeight(self.maxHeight)
 
-        self.select_timeframe()
+        self.rainfallQuery = QSqlQuery()
+        self.rainfallQuery.prepare("""SELECT
+                                      date as "Date",
+                                      time as "Time",
+                                      reading as "Duration",
+                                      averageReading as "Depth"
+                                      FROM Reading
+                                      WHERE readingTypeID = 3""")
+        self.rainfallQuery.exec_()
+        self.rainfallModel = QSqlQueryModel()
+        self.rainfallModel.setQuery(self.rainfallQuery)
+        self.rainfallTableView.setModel(self.rainfallModel)
 
         self.layout2.addWidget(self.rainfallTableView)
         self.layout2.setAlignment(Qt.AlignLeft)
@@ -84,7 +95,7 @@ class RainfallWindow(QMainWindow):
 
 
     def select_timeframe(self):
-        #datetime & SQLite
+        #datetime & PyQtSql
         self.currentTimeframe = self.timeframeComboBox.currentIndex()
         if self.currentTimeframe == 0:
             self.comparisonDate = datetime.timedelta(1)
@@ -97,12 +108,10 @@ class RainfallWindow(QMainWindow):
         elif self.currentTimeframe == 4:
             self.comparisonDate = datetime.timedelta(365)
         elif self.currentTimeframe == 5:
-            self.comparisonDate = datetime.timedelta.max
+            self.comparisonDate = datetime.timedelta(99999)
         else:
             pass
-        print(self.comparisonDate)
 
-        self.rainfallQuery = QSqlQuery()
         self.rainfallQuery.prepare("""SELECT
                                       date as "Date",
                                       time as "Time",
@@ -110,9 +119,7 @@ class RainfallWindow(QMainWindow):
                                       averageReading as "Depth"
                                       FROM Reading
                                       WHERE readingTypeID = 3""")
-        #self.rainfallQuery.addBindValue()
         self.rainfallQuery.exec_()
-        self.rainfallModel = QSqlQueryModel()
         self.rainfallModel.setQuery(self.rainfallQuery)
         self.rainfallTableView.setModel(self.rainfallModel)
 
@@ -123,4 +130,5 @@ if __name__ == "__main__":
     rainfallWindow = RainfallWindow()
     rainfallWindow.show()
     rainfallWindow.raise_()
+    rainfallWindow.resize(500,400)
     application.exec_()

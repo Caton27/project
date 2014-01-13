@@ -24,7 +24,6 @@ class MainWindow(QMainWindow):
         
         self.setMenuBar = self.menu_bar()
         self.create_windows()
-        self.initial_layout_widget.setMinimumSize(QSize(600,350))
         self.add_windows()
         
         self.central_widget = QWidget()
@@ -159,5 +158,6 @@ if __name__ == "__main__":
     window = MainWindow()
     window.show()
     window.raise_()
+    window.resize(600,350)
     application.exec_()
     

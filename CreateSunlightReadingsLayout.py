@@ -65,7 +65,16 @@ class SunlightWindow(QMainWindow):
         self.sunlightTableView.setMinimumHeight(112)
         self.sunlightTableView.setMaximumHeight(self.maxHeight)
 
-        self.select_timeframe()
+        self.sunlightQuery = QSqlQuery()
+        self.sunlightQuery.prepare("""SELECT
+                                      date as "Date",
+                                      reading as "Intensity"
+                                      FROM Reading
+                                      WHERE readingTypeID = 2""")
+        self.sunlightQuery.exec_()
+        self.sunlightModel = QSqlQueryModel()
+        self.sunlightModel.setQuery(self.sunlightQuery)
+        self.sunlightTableView.setModel(self.sunlightModel)
 
         #################
         #*****GRAPH*****#
@@ -89,7 +98,7 @@ class SunlightWindow(QMainWindow):
         return self.sunlight_layout_widget
 
     def select_timeframe(self):
-        #datetime & SQLite
+        #datetime & PyQtSql
         self.currentTimeframe = self.timeframeComboBox.currentIndex()
         if self.currentTimeframe == 0:
             self.comparisonDate = datetime.timedelta(1)
@@ -102,20 +111,16 @@ class SunlightWindow(QMainWindow):
         elif self.currentTimeframe == 4:
             self.comparisonDate = datetime.timedelta(365)
         elif self.currentTimeframe == 5:
-            self.comparisonDate = datetime.timedelta.max
+            self.comparisonDate = datetime.timedelta.(99999)
         else:
             pass
-        print(self.comparisonDate)
 
-        self.sunlightQuery = QSqlQuery()
         self.sunlightQuery.prepare("""SELECT
                                       date as "Date",
                                       reading as "Intensity"
                                       FROM Reading
                                       WHERE readingTypeID = 2""")
-        #self.rainfallQuery.addBindValue()
         self.sunlightQuery.exec_()
-        self.sunlightModel = QSqlQueryModel()
         self.sunlightModel.setQuery(self.sunlightQuery)
         self.sunlightTableView.setModel(self.sunlightModel)
 
@@ -124,4 +129,5 @@ if __name__ == "__main__":
     sunlightWindow = SunlightWindow()
     sunlightWindow.show()
     sunlightWindow.raise_()
+    sunlightWindow.resize(600,1400)
     application.exec_()

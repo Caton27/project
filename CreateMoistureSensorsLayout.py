@@ -39,7 +39,6 @@ class MoistureSensorsWindow(QMainWindow):
 
         self.layout1 = QGridLayout()
         self.layout2 = QHBoxLayout()
-        self.layout3 = QHBoxLayout()
 
         self.titleFont = QFont()
         self.titleFont.setPointSize(13)
@@ -79,11 +78,23 @@ class MoistureSensorsWindow(QMainWindow):
 
         #layout 2
         self.moistureSensorsTableView = QTableView()
-        self.select_moisture_sensors()
+        self.currentMoistureSensorsID = self.moistureSensorsComboBox.currentIndex() + 3
+        self.moistureSensorsQuery = QSqlQuery()
+        self.moistureSensorsQuery.prepare("""SELECT
+                                       date as "Date",
+                                       time as "Time",
+                                       reading as "Reading",
+                                       averageReading as "Average Reading"
+                                       FROM Reading
+                                       WHERE SensorID = ?""")
+        self.moistureSensorsQuery.addBindValue(self.currentMoistureSensorsID)
+        self.moistureSensorsQuery.exec_()
+        self.moistureSensorsModel = QSqlQueryModel()
+        self.moistureSensorsModel.setQuery(self.moistureSensorsQuery)
+        self.moistureSensorsTableView.setModel(self.moistureSensorsModel)
 
         self.moistureSensorsTableView.setFixedWidth(434)
-        self.moistureSensorsTableView.setMinimumHeight(112)
-        self.moistureSensorsTableView.setMaximumHeight(self.maxHeight1)
+        self.moistureSensorsTableView.setMinimumHeight(115)
         
         self.layout2.addWidget(self.moistureSensorsTableView)
         self.layout2.setAlignment(Qt.AlignLeft)
@@ -112,15 +123,6 @@ class MoistureSensorsWindow(QMainWindow):
 
     def select_moisture_sensors(self):
         self.currentMoistureSensorsID = self.moistureSensorsComboBox.currentIndex() + 3
-
-        with sqlite3.connect("FlowerbedDatabase.db") as db2:
-            self.cursor = db2.cursor()
-            values = (self.currentMoistureSensorsID,)
-            self.cursor.execute("select * from Reading where sensorID = ?", values)
-            self.numOperations = len(self.cursor.fetchall())
-
-        self.maxHeight1 = 115 + 30 * (self.numOperations - 3)
-        self.moistureSensorsQuery = QSqlQuery()
         self.moistureSensorsQuery.prepare("""SELECT
                                        date as "Date",
                                        time as "Time",
@@ -130,13 +132,12 @@ class MoistureSensorsWindow(QMainWindow):
                                        WHERE SensorID = ?""")
         self.moistureSensorsQuery.addBindValue(self.currentMoistureSensorsID)
         self.moistureSensorsQuery.exec_()
-        self.moistureSensorsModel = QSqlQueryModel()
         self.moistureSensorsModel.setQuery(self.moistureSensorsQuery)
         self.moistureSensorsTableView.setModel(self.moistureSensorsModel)
         self.get_linked()
 
     def select_timeframe(self):
-        #datetime & SQLite
+        #datetime & PyQtSql
         self.currentTimeframe = self.timeframeComboBox.currentIndex()
         if self.currentTimeframe == 0:
             self.comparisonDate = datetime.timedelta(1)
@@ -149,19 +150,9 @@ class MoistureSensorsWindow(QMainWindow):
         elif self.currentTimeframe == 4:
             self.comparisonDate = datetime.timedelta(365)
         elif self.currentTimeframe == 5:
-            self.comparisonDate = datetime.timedelta.max
+            self.comparisonDate = datetime.timedelta(99999)
         else:
             pass
-        print(self.comparisonDate)
-        
-        with sqlite3.connect("FlowerbedDatabase.db") as db2:
-            self.cursor = db2.cursor()
-            values = (self.currentMoistureSensorsID,)
-            self.cursor.execute("select * from Reading where sensorID = ?", values)
-            self.numOperations = len(self.cursor.fetchall())
-            
-        self.maxHeight1 = 115 + 30 * (self.numOperations - 3)
-        self.moistureSensorsQuery = QSqlQuery()
         self.moistureSensorsQuery.prepare("""SELECT
                                        date as "Date",
                                        time as "Time",
@@ -171,9 +162,9 @@ class MoistureSensorsWindow(QMainWindow):
                                        WHERE SensorID = ?""")
         self.moistureSensorsQuery.addBindValue(self.currentMoistureSensorsID)
         self.moistureSensorsQuery.exec_()
-        self.moistureSensorsModel = QSqlQueryModel()
         self.moistureSensorsModel.setQuery(self.moistureSensorsQuery)
         self.moistureSensorsTableView.setModel(self.moistureSensorsModel)
+        
 
 #works initially, but doesn't update when self.currentMoistureSensorID is changed
     def get_linked(self):
@@ -181,11 +172,10 @@ class MoistureSensorsWindow(QMainWindow):
             self.cursor = db2.cursor()
             values = (self.currentMoistureSensorsID,)
             self.cursor.execute("select flowerbedID from Sensor where sensorID = ?",values)
-            temp = self.cursor.fetchall()
-            for each in temp:
+            for each in self.cursor.fetchall():
                 for each in each:
                     self.linked1 = each
-        self.flowerbedLinks = QLabel("This moisture sensor is currently linked to flowerbed number {0}.".format(self.linked1))
+        self.flowerbedLinks = QLabel("""This moisture sensor is currently linked to flowerbed number {0}.""".format(self.linked1))
         
         with sqlite3.connect("FlowerbedDatabase.db") as db2:
             self.cursor = db2.cursor()
@@ -209,4 +199,5 @@ if __name__ == "__main__":
     moistureSensorsWindow = MoistureSensorsWindow()
     moistureSensorsWindow.show()
     moistureSensorsWindow.raise_()
+    moistureSensorsWindow.resize(500,500)
     application.exec_()

@@ -18,7 +18,6 @@ class InitialLayoutWindow(QMainWindow):
         self.db.open()
 
         self.create_initial_layout()
-        self.initial_layout_widget.setMinimumSize(QSize(600,350))
         self.stackedLayout.addWidget(self.initial_layout_widget)
 
         self.central_widget = QWidget()
@@ -55,4 +54,5 @@ if __name__ == "__main__":
     initialWindow = InitialLayoutWindow()
     initialWindow.show()
     initialWindow.raise_()
+    initialWindow.resize(600,350)
     application.exec_()

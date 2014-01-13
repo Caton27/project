@@ -71,19 +71,24 @@ class FlowerbedsWindow(QMainWindow):
 
         #layout 2
         self.flowerbedTableView = QTableView()
-        ###############################################################
-        ###############################################################
-        ###############################################################
-        ###############################################################
-        ###############################################################
-        ###############################################################
-        ###############################################################
-        ###############################################################
-        ###############################################################
+        self.currentFlowerbedID = self.flowerbedsComboBox.currentIndex() + 1
+        self.maxHeight = 295
+        self.flowerbedQuery = QSqlQuery()
+        self.flowerbedQuery.prepare("""SELECT
+                                       plantGrowing as "Plant",
+                                       datePlanted as "Date Planted",
+                                       waterNeed as "Water Need"
+                                       FROM Plant
+                                       WHERE FlowerbedID = ?""")
+        self.flowerbedQuery.addBindValue(self.currentFlowerbedID)
+        self.flowerbedQuery.exec_()
+        self.flowerbedModel = QSqlQueryModel()
+        self.flowerbedModel.setQuery(self.flowerbedQuery)
+        self.flowerbedTableView.setModel(self.flowerbedModel)
 
         self.flowerbedTableView.setFixedWidth(334)
-        self.flowerbedTableView.setMinimumHeight(112)
-        self.flowerbedTableView.setMaximumHeight(self.maxHeight1)
+        self.flowerbedTableView.setMinimumHeight(115)
+        self.flowerbedTableView.setMaximumHeight(self.maxHeight)
         
         self.layout2.addWidget(self.flowerbedTableView)
         self.layout2.setAlignment(Qt.AlignLeft)
@@ -111,11 +116,26 @@ class FlowerbedsWindow(QMainWindow):
 
         #layout 4
         self.operationTableView = QTableView()
+        self.operationQuery = QSqlQuery()
+        self.operationQuery.prepare("""SELECT
+                                       Operation.date as "Date",
+                                       Operation.time as "Time",
+                                       Operation.duration as "Duration (s)",
+                                       Operation.amount as "Amount (L)",
+                                       Operation.cost as "Cost (£)",
+                                       Reading.reading as "1st Reading"
+                                       FROM Operation, Reading
+                                       WHERE Operation.FlowerbedID = ?
+                                       AND Operation.readingBeforeID = Reading.readingID""")
+        self.operationQuery.addBindValue(self.currentFlowerbedID)
+        self.operationQuery.exec_()
+        self.operationModel = QSqlQueryModel()
+        self.operationModel.setQuery(self.operationQuery)
+        self.operationTableView.setModel(self.operationModel)
         
         self.operationTableView.setFixedWidth(724)
-        self.operationTableView.setMinimumHeight(112)
-        self.operationTableView.setMaximumHeight(self.maxHeight2)
-        self.select_timeframe()
+        self.operationTableView.setMinimumHeight(115)
+        self.operationTableView.setMaximumHeight(self.maxHeight)
         
         self.layout4.addWidget(self.operationTableView)
         self.layout4.setAlignment(Qt.AlignLeft)
@@ -142,16 +162,8 @@ class FlowerbedsWindow(QMainWindow):
         return self.flowerbeds_layout_widget
 
     def select_flowerbed(self):
+        #plants
         self.currentFlowerbedID = self.flowerbedsComboBox.currentIndex() + 1
-        
-        with sqlite3.connect("FlowerbedDatabase.db") as db2:
-            self.cursor = db2.cursor()
-            values = (self.currentFlowerbedID,)
-            self.cursor.execute("select * from Plant where flowerbedID = ?", values)
-            self.numPlants = len(self.cursor.fetchall())
-
-        self.maxHeight1 = 115 + 30 * (self.numPlants - 3)
-        self.flowerbedQuery = QSqlQuery()
         self.flowerbedQuery.prepare("""SELECT
                                        plantGrowing as "Plant",
                                        datePlanted as "Date Planted",
@@ -160,13 +172,9 @@ class FlowerbedsWindow(QMainWindow):
                                        WHERE FlowerbedID = ?""")
         self.flowerbedQuery.addBindValue(self.currentFlowerbedID)
         self.flowerbedQuery.exec_()
-        self.flowerbedModel = QSqlQueryModel()
         self.flowerbedModel.setQuery(self.flowerbedQuery)
         self.flowerbedTableView.setModel(self.flowerbedModel)
-        
-        self.select_timeframe() 
-            
-        self.operationQuery = QSqlQuery()
+        #operations
         self.operationQuery.prepare("""SELECT
                                        Operation.date as "Date",
                                        Operation.time as "Time",
@@ -179,9 +187,9 @@ class FlowerbedsWindow(QMainWindow):
                                        AND Operation.readingBeforeID = Reading.readingID""")
         self.operationQuery.addBindValue(self.currentFlowerbedID)
         self.operationQuery.exec_()
-        self.operationModel = QSqlQueryModel()
         self.operationModel.setQuery(self.operationQuery)
         self.operationTableView.setModel(self.operationModel)
+
 
 
     def select_timeframe(self):
@@ -194,36 +202,13 @@ class FlowerbedsWindow(QMainWindow):
         elif self.currentTimeframe == 2:
             self.comparisonDate = datetime.timedelta(30)
         elif self.currentTimeframe == 3:
-            self.comparisonDate = datetime.timedelta(122) #should be 183
+            self.comparisonDate = datetime.timedelta(183)
         elif self.currentTimeframe == 4:
             self.comparisonDate = datetime.timedelta(365)
         elif self.currentTimeframe == 5:
             self.comparisonDate = datetime.timedelta(99999)
         else:
             pass
-        
-        print(self.comparisonDate)
-        with sqlite3.connect("FlowerbedDatabase.db") as db2:
-            self.cursor = db2.cursor()
-            values = (self.currentFlowerbedID,)
-            self.cursor.execute("select * from Operation where flowerbedID = ?", values)
-            temp = self.cursor.fetchall()
-            theDate = datetime.datetime.now()
-            comDate = theDate - self.comparisonDate
-            temp2 = 0
-            for each in temp:
-                newDate = each[1]
-                newTime = each[2]
-                newDate = datetime.datetime(int(newDate[6:10]),int(newDate[3:5]),int(newDate[0:2]),int(newTime[0:2]),int(newTime[3:5]))
-                if newDate < comDate:
-                    temp2 += 1
-            #temp2 is the number of operations within the given timeframe
-            print(temp2)
-            self.numOperations = temp2
-             
-        self.maxHeight2 = 115 + 30 * (self.numOperations - 3)
-        self.operationTableView.setMaximumHeight(self.maxHeight2)
-        self.operationQuery = QSqlQuery()
         self.operationQuery.prepare("""SELECT
                                        Operation.date as "Date",
                                        Operation.time as "Time",
@@ -232,13 +217,13 @@ class FlowerbedsWindow(QMainWindow):
                                        Operation.cost as "Cost (£)",
                                        Reading.reading as "1st Reading"
                                        FROM Operation, Reading
-                                       WHERE Operation.flowerbedID = ?
+                                       WHERE Operation.FlowerbedID = ?
                                        AND Operation.readingBeforeID = Reading.readingID""")
         self.operationQuery.addBindValue(self.currentFlowerbedID)
         self.operationQuery.exec_()
-        self.operationModel = QSqlQueryModel()
         self.operationModel.setQuery(self.operationQuery)
         self.operationTableView.setModel(self.operationModel)
+        
 
     #works initially, but doesn't update when self.currentFlowerbedID is changed
     def get_linked(self):
@@ -272,4 +257,5 @@ if __name__ == "__main__":
     flowerbedsWindow = FlowerbedsWindow()
     flowerbedsWindow.show()
     flowerbedsWindow.raise_()
+    flowerbedsWindow.resize(700,600)
     application.exec_()
