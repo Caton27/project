@@ -181,7 +181,7 @@ class FlowerbedsWindow(QMainWindow):
                                   Operation.date as "Date",
                                   Operation.time as "Time",
                                   Operation.duration as "Duration (s)",
-                                   Operation.amount as "Amount (L)",
+                                  Operation.amount as "Amount (L)",
                                   Operation.cost as "Cost (£)",
                                   Reading.reading as "1st Reading"
                                   FROM Operation, Reading
@@ -213,15 +213,15 @@ class FlowerbedsWindow(QMainWindow):
             pass
         self.newQuery3 = QSqlQuery()
         self.newQuery3.prepare("""SELECT
-                                       Operation.date as "Date",
-                                       Operation.time as "Time",
-                                       Operation.duration as "Duration (s)",
-                                       Operation.amount as "Amount (L)",
-                                       Operation.cost as "Cost (£)",
-                                       Reading.reading as "1st Reading"
-                                       FROM Operation, Reading
-                                       WHERE Operation.FlowerbedID = ?
-                                       AND Operation.readingBeforeID = Reading.readingID""")
+                                  Operation.date as "Date",
+                                  Operation.time as "Time",
+                                  Operation.duration as "Duration (s)",
+                                  Operation.amount as "Amount (L)",
+                                  Operation.cost as "Cost (£)",
+                                  Reading.reading as "1st Reading"
+                                  FROM Operation, Reading
+                                  WHERE Operation.FlowerbedID = ?
+                                  AND Operation.readingBeforeID = Reading.readingID""")
         self.newQuery3.addBindValue(self.currentFlowerbedID)
         self.newQuery3.exec_()
         self.operationModel.setQuery(self.newQuery3)
