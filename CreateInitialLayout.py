@@ -5,24 +5,19 @@ from PyQt4.QtSql import *
 import sqlite3
 import sys
 
-class InitialLayoutWindow(QMainWindow):
+class InitialLayoutWindow(QWidget):
     """Window"""
     #constructor
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Irigation system")
-        self.stackedLayout = QStackedLayout()
 
         self.db = QSqlDatabase.addDatabase("QSQLITE")
         self.db.setDatabaseName("FlowerbedDatabase.db")
         self.db.open()
 
         self.create_initial_layout()
-        self.stackedLayout.addWidget(self.initial_layout_widget)
-
-        self.central_widget = QWidget()
-        self.central_widget.setLayout(self.stackedLayout)
-        self.setCentralWidget(self.central_widget)
+        self.setLayout(self.initial_layout)
         
 
     def create_initial_layout(self):

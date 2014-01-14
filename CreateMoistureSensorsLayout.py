@@ -6,26 +6,21 @@ import sqlite3
 import sys
 import datetime
 
-class MoistureSensorsWindow(QMainWindow):
+class MoistureSensorsWindow(QWidget):
     """Window"""
     #constructor
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Irigation system - Moisture Sensors")
-        self.stackedLayout = QStackedLayout()
 
         self.db = QSqlDatabase.addDatabase("QSQLITE")
         self.db.setDatabaseName("FlowerbedDatabase.db")
         self.db.open()
 
         self.create_moisture_sensors_layout()
-        self.stackedLayout.addWidget(self.moisture_sensors_layout_widget)
+        self.setLayout(self.moisture_sensors_layout)
 
-        self.central_widget = QWidget()
-        self.central_widget.setLayout(self.stackedLayout)
-        self.setCentralWidget(self.central_widget)
-
-        
+    
     def create_moisture_sensors_layout(self):
         with sqlite3.connect("FlowerbedDatabase.db") as db2:
             self.cursor = db2.cursor()

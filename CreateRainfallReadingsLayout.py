@@ -6,24 +6,19 @@ import sqlite3
 import sys
 import datetime
 
-class RainfallWindow(QMainWindow):
+class RainfallWindow(QWidget):
     """Window"""
     #constructor
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Irigation system - Rainfall readings")
-        self.stackedLayout = QStackedLayout()
 
         self.db = QSqlDatabase.addDatabase("QSQLITE")
         self.db.setDatabaseName("FlowerbedDatabase.db")
         self.db.open()
 
         self.create_rainfall_layout()
-        self.stackedLayout.addWidget(self.rainfall_layout_widget)
-
-        self.central_widget = QWidget()
-        self.central_widget.setLayout(self.stackedLayout)
-        self.setCentralWidget(self.central_widget)
+        self.setLayout(self.rainfall_layout)
 
 
     def create_rainfall_layout(self):
