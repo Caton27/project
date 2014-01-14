@@ -111,7 +111,7 @@ class SunlightWindow(QMainWindow):
         elif self.currentTimeframe == 4:
             self.comparisonDate = datetime.timedelta(365)
         elif self.currentTimeframe == 5:
-            self.comparisonDate = datetime.timedelta.(99999)
+            self.comparisonDate = datetime.timedelta(99999)
         else:
             pass
 
