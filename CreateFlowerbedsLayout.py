@@ -164,30 +164,32 @@ class FlowerbedsWindow(QMainWindow):
     def select_flowerbed(self):
         #plants
         self.currentFlowerbedID = self.flowerbedsComboBox.currentIndex() + 1
-        self.flowerbedQuery.prepare("""SELECT
-                                       plantGrowing as "Plant",
-                                       datePlanted as "Date Planted",
-                                       waterNeed as "Water Need"
-                                       FROM Plant
-                                       WHERE FlowerbedID = ?""")
-        self.flowerbedQuery.addBindValue(self.currentFlowerbedID)
-        self.flowerbedQuery.exec_()
-        self.flowerbedModel.setQuery(self.flowerbedQuery)
+        self.newQuery1 = QSqlQuery()
+        self.newQuery1.prepare("""SELECT
+                                 plantGrowing as "Plant",
+                                 datePlanted as "Date Planted",
+                                 waterNeed as "Water Need"
+                                 FROM Plant
+                                 WHERE FlowerbedID = ?""")
+        self.newQuery1.addBindValue(self.currentFlowerbedID)
+        self.newQuery1.exec_()
+        self.flowerbedModel.setQuery(self.newQuery1)
         self.flowerbedTableView.setModel(self.flowerbedModel)
         #operations
-        self.operationQuery.prepare("""SELECT
-                                       Operation.date as "Date",
-                                       Operation.time as "Time",
-                                       Operation.duration as "Duration (s)",
-                                       Operation.amount as "Amount (L)",
-                                       Operation.cost as "Cost (£)",
-                                       Reading.reading as "1st Reading"
-                                       FROM Operation, Reading
-                                       WHERE Operation.FlowerbedID = ?
-                                       AND Operation.readingBeforeID = Reading.readingID""")
-        self.operationQuery.addBindValue(self.currentFlowerbedID)
-        self.operationQuery.exec_()
-        self.operationModel.setQuery(self.operationQuery)
+        self.newQuery2 = QSqlQuery()
+        self.newQuery2.prepare("""SELECT
+                                  Operation.date as "Date",
+                                  Operation.time as "Time",
+                                  Operation.duration as "Duration (s)",
+                                   Operation.amount as "Amount (L)",
+                                  Operation.cost as "Cost (£)",
+                                  Reading.reading as "1st Reading"
+                                  FROM Operation, Reading
+                                  WHERE Operation.FlowerbedID = ?
+                                  AND Operation.readingBeforeID = Reading.readingID""")
+        self.newQuery2.addBindValue(self.currentFlowerbedID)
+        self.newQuery2.exec_()
+        self.operationModel.setQuery(self.newQuery2)
         self.operationTableView.setModel(self.operationModel)
 
 
@@ -209,7 +211,8 @@ class FlowerbedsWindow(QMainWindow):
             self.comparisonDate = datetime.timedelta(99999)
         else:
             pass
-        self.operationQuery.prepare("""SELECT
+        self.newQuery3 = QSqlQuery()
+        self.newQuery3.prepare("""SELECT
                                        Operation.date as "Date",
                                        Operation.time as "Time",
                                        Operation.duration as "Duration (s)",
@@ -219,9 +222,9 @@ class FlowerbedsWindow(QMainWindow):
                                        FROM Operation, Reading
                                        WHERE Operation.FlowerbedID = ?
                                        AND Operation.readingBeforeID = Reading.readingID""")
-        self.operationQuery.addBindValue(self.currentFlowerbedID)
-        self.operationQuery.exec_()
-        self.operationModel.setQuery(self.operationQuery)
+        self.newQuery3.addBindValue(self.currentFlowerbedID)
+        self.newQuery3.exec_()
+        self.operationModel.setQuery(self.newQuery3)
         self.operationTableView.setModel(self.operationModel)
         
 

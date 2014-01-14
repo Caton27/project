@@ -115,13 +115,14 @@ class SunlightWindow(QMainWindow):
         else:
             pass
 
-        self.sunlightQuery.prepare("""SELECT
+        self.newQuery = QSqlQuery()
+        self.newQuery.prepare("""SELECT
                                       date as "Date",
                                       reading as "Intensity"
                                       FROM Reading
                                       WHERE readingTypeID = 2""")
-        self.sunlightQuery.exec_()
-        self.sunlightModel.setQuery(self.sunlightQuery)
+        self.newQuery.exec_()
+        self.sunlightModel.setQuery(self.newQuery)
         self.sunlightTableView.setModel(self.sunlightModel)
 
 if __name__ == "__main__":

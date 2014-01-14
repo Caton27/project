@@ -123,16 +123,17 @@ class MoistureSensorsWindow(QMainWindow):
 
     def select_moisture_sensors(self):
         self.currentMoistureSensorsID = self.moistureSensorsComboBox.currentIndex() + 3
-        self.moistureSensorsQuery.prepare("""SELECT
-                                       date as "Date",
-                                       time as "Time",
-                                       reading as "Reading",
-                                       averageReading as "Average Reading"
-                                       FROM Reading
-                                       WHERE SensorID = ?""")
-        self.moistureSensorsQuery.addBindValue(self.currentMoistureSensorsID)
-        self.moistureSensorsQuery.exec_()
-        self.moistureSensorsModel.setQuery(self.moistureSensorsQuery)
+        self.newQuery1 = QSqlQuery()
+        self.newQuery1.prepare("""SELECT
+                                  date as "Date",
+                                  time as "Time",
+                                  reading as "Reading",
+                                  averageReading as "Average Reading"
+                                  FROM Reading
+                                  WHERE SensorID = ?""")
+        self.newQuery1.addBindValue(self.currentMoistureSensorsID)
+        self.newQuery1.exec_()
+        self.moistureSensorsModel.setQuery(self.newQuery1)
         self.moistureSensorsTableView.setModel(self.moistureSensorsModel)
         self.get_linked()
 
@@ -153,16 +154,17 @@ class MoistureSensorsWindow(QMainWindow):
             self.comparisonDate = datetime.timedelta(99999)
         else:
             pass
-        self.moistureSensorsQuery.prepare("""SELECT
-                                       date as "Date",
-                                       time as "Time",
-                                       reading as "Reading",
-                                       averageReading as "Average Reading"
-                                       FROM Reading
-                                       WHERE SensorID = ?""")
-        self.moistureSensorsQuery.addBindValue(self.currentMoistureSensorsID)
-        self.moistureSensorsQuery.exec_()
-        self.moistureSensorsModel.setQuery(self.moistureSensorsQuery)
+        self.newQuery2 = QSqlQuery()
+        self.newQuery2.prepare("""SELECT
+                                  date as "Date",
+                                  time as "Time",
+                                  reading as "Reading",
+                                  averageReading as "Average Reading"
+                                  FROM Reading
+                                  WHERE SensorID = ?""")
+        self.newQuery2.addBindValue(self.currentMoistureSensorsID)
+        self.newQuery2.exec_()
+        self.moistureSensorsModel.setQuery(self.newQuery2)
         self.moistureSensorsTableView.setModel(self.moistureSensorsModel)
         
 

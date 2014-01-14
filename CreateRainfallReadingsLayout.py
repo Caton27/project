@@ -112,15 +112,16 @@ class RainfallWindow(QMainWindow):
         else:
             pass
 
-        self.rainfallQuery.prepare("""SELECT
+        self.newQuery = QSqlQuery()
+        self.newQuery.prepare("""SELECT
                                       date as "Date",
                                       time as "Time",
                                       reading as "Duration",
                                       averageReading as "Depth"
                                       FROM Reading
                                       WHERE readingTypeID = 3""")
-        self.rainfallQuery.exec_()
-        self.rainfallModel.setQuery(self.rainfallQuery)
+        self.newQuery.exec_()
+        self.rainfallModel.setQuery(self.newQuery)
         self.rainfallTableView.setModel(self.rainfallModel)
 
 
