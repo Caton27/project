@@ -25,7 +25,8 @@ class VolumetricsWindow(QWidget):
 
         self.layout1 = QHBoxLayout()
         self.layout2 = QGridLayout()
-        self.layout3 = QHBoxLayout()
+        self.layout3 = QGridLayout()
+        self.layout4 = QHBoxLayout()
 
         self.titleFont = QFont()
         self.titleFont.setPointSize(13)
@@ -55,54 +56,77 @@ class VolumetricsWindow(QWidget):
         self.layout1.addWidget(self.totalValuesLabel)
         self.layout1.setAlignment(Qt.AlignTop)
 
-        #layout 2
-        self.volumeWaterLabel = QLabel("Volume of water used:")
-        self.volumeWaterLabel.setFixedWidth(170)
-
-        self.volumeLineEdit = QLineEdit()
-        self.volumeLineEdit.setFixedWidth(100)
-        self.volumeLineEdit.setText("24 Litres")
-        
+        #layout 3
+        with sqlite3.connect("FlowerbedDatabase.db") as db2:
+            self.totalVolume = 0
+            self.cursor = db2.cursor()
+            self.cursor.execute("select amount from Operation")
+            for each in self.cursor.fetchall():
+                for each in each:
+                    self.totalVolume += float(each)
+            self.totalVolumeString = str(self.totalVolume) + " Litres"
+                
+        with sqlite3.connect("FlowerbedDatabase.db") as db2:
+            self.totalCost = 0
+            self.cursor = db2.cursor()
+            self.cursor.execute("select cost from Operation")
+            for each in self.cursor.fetchall():
+                for each in each:
+                    self.totalCost += float(each)
+            self.totalCostString = "£" + str(self.totalCost)
+            if self.totalCostString[-2] == ".":
+                self.totalCostString += "0"
+            
         self.volumeWaterLabel2 = QLabel("Volume of water used:")
-        self.volumeWaterLabel2.setFixedWidth(170)
+        self.volumeWaterLabel2.setFixedWidth(110)
 
         self.volumeLineEdit2 = QLineEdit()
         self.volumeLineEdit2.setFixedWidth(100)
-        self.volumeLineEdit2.setText("902 Litres")
+        self.volumeLineEdit2.setText(self.totalVolumeString)
 
+        self.costLabel2 = QLabel("Cost:")
+        self.costLabel2.setAlignment(Qt.AlignLeft)
 
-        self.costLayout = QHBoxLayout()
-        self.cost1Label = QLabel("Cost:")
-        self.cost1Label.setFixedWidth(25)
-        self.cost1Label.setAlignment(Qt.AlignLeft)
-        self.cost2Label = QLabel("£")
-        self.cost2Label.setFixedWidth(5)
-        self.cost2Label.setAlignment(Qt.AlignRight)
-        self.costLayout.addWidget(self.cost1Label)
-        self.costLayout.addWidget(self.cost2Label)
+        self.costLineEdit2 = QLineEdit()
+        self.costLineEdit2.setFixedWidth(100)
+        self.costLineEdit2.setText(self.totalCostString)
+        
+        self.layout3.addWidget(self.volumeWaterLabel2,0,2)
+        self.layout3.addWidget(self.volumeLineEdit2,0,3)
+        self.layout3.addWidget(self.costLabel2,1,2)
+        self.layout3.addWidget(self.costLineEdit2,1,3)
+        self.layout3.setAlignment(Qt.AlignLeft)
 
-        self.costLayout2 = QHBoxLayout()
-        self.cost1Label = QLabel("Cost:")
-        self.cost1Label.setFixedWidth(25)
-        self.cost1Label.setAlignment(Qt.AlignLeft)
-        self.cost2Label = QLabel("£")
-        self.cost2Label.setFixedWidth(5)
-        self.cost2Label.setAlignment(Qt.AlignRight)
-        self.costLayout2.addWidget(self.cost1Label)
-        self.costLayout2.addWidget(self.cost2Label)
+        #layout 2        
+        self.volumeWaterLabel = QLabel("Volume of water used:")
+        self.volumeWaterLabel.setFixedWidth(110)
+
+        self.volumeLineEdit = QLineEdit()
+        self.volumeLineEdit.setFixedWidth(100)
+        self.volumeLineEdit.setText(self.totalVolumeString)
+
+        self.costLabel = QLabel("Cost:")
+        self.costLabel.setAlignment(Qt.AlignLeft)
+
+        self.costLineEdit = QLineEdit()
+        self.costLineEdit.setFixedWidth(100)
+        self.costLineEdit.setText(self.totalCostString)
 
         self.layout2.addWidget(self.volumeWaterLabel,0,0)
         self.layout2.addWidget(self.volumeLineEdit,0,1)
-        self.layout2.addWidget(self.volumeWaterLabel2,0,2)
-        self.layout2.addWidget(self.volumeLineEdit2,0,3)
-        self.layout2.addLayout(self.costLayout,1,0)
-        self.layout2.addLayout(self.costLayout2,1,3)
-        self.layout2.setAlignment(Qt.AlignTop)
+        self.layout2.addWidget(self.costLabel,1,0)
+        self.layout2.addWidget(self.costLineEdit,1,1)
         self.layout2.setAlignment(Qt.AlignLeft)
+
+        #layout 4
+        self.layout4.addLayout(self.layout2)
+        self.layout4.addLayout(self.layout3)
+        self.layout4.setAlignment(Qt.AlignTop)
+        
 
         #add layouts
         self.volumetrics_layout.addLayout(self.layout1)
-        self.volumetrics_layout.addLayout(self.layout2)
+        self.volumetrics_layout.addLayout(self.layout4)
 
 
         self.volumetrics_layout_widget = QWidget()

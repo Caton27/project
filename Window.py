@@ -7,6 +7,7 @@ from CreateFlowerbedsLayout import *
 from CreateMoistureSensorsLayout import *
 from CreateSunlightReadingsLayout import *
 from CreateRainfallReadingsLayout import *
+from CreateVolumetricsLayout import *
 
 import sys
 
@@ -58,7 +59,7 @@ class MainWindow(QMainWindow):
         #creating the volumetrics action
         self.volumetricsAction = QAction(QIcon(), "Volumetrics", self)
         self.volumetricsAction.setStatusTip("View system volumetrics")
-        self.volumetricsAction.triggered.connect(self.temp)
+        self.volumetricsAction.triggered.connect(self.volumetrics_view)
 
         #adding actions to the view menu
         self.viewMenu = self.menubar.addMenu("View")
@@ -131,6 +132,7 @@ class MainWindow(QMainWindow):
         self.moisture_sensors_layout_widget = MoistureSensorsWindow()
         self.sunlight_layout_widget = SunlightWindow()
         self.rainfall_layout_widget = RainfallWindow()
+        self.volumetrics_layout_widget = VolumetricsWindow()
 
     def add_windows(self):
         self.stackedLayout.addWidget(self.initial_layout_widget)
@@ -138,6 +140,7 @@ class MainWindow(QMainWindow):
         self.stackedLayout.addWidget(self.moisture_sensors_layout_widget)
         self.stackedLayout.addWidget(self.sunlight_layout_widget)
         self.stackedLayout.addWidget(self.rainfall_layout_widget)
+        self.stackedLayout.addWidget(self.volumetrics_layout_widget)
 
     def flowerbeds_view(self):
         self.stackedLayout.setCurrentIndex(1)
@@ -150,6 +153,9 @@ class MainWindow(QMainWindow):
 
     def rainfall_view(self):
         self.stackedLayout.setCurrentIndex(4)
+
+    def volumetrics_view(self):
+        self.stackedLayout.setCurrentIndex(5)
         
         
     
