@@ -240,11 +240,12 @@ class FlowerbedsWindow(QWidget):
 
 
     def add_flowerbed(self):
-        pass
-##        with sqlite3.connect("FlowerbedDatabase.db") as db2:
-##            self.cursor = db2.cursor()
-##            self.cursor.execute("insert into Flowerbed(flowerbedID)")
-##            db.commit()
+        with sqlite3.connect("FlowerbedDatabase.db") as db2:
+            self.cursor = db2.cursor()
+            self.cursor.execute("select flowerbedID from Flowerbed")
+            newID = ((int(self.cursor.fetchall()[-1][0]) + 1),)
+            self.cursor.execute("insert into Flowerbed(flowerbedID) values(?)",newID)
+            db2.commit()
         
     def temp(self):
         pass
