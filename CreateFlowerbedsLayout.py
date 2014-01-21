@@ -138,9 +138,10 @@ class FlowerbedsWindow(QWidget):
 
         
         #flowerbed links
-        self.get_linked()
         self.infoFont = QFont()
         self.infoFont.setPointSize(8)
+        self.flowerbedLinks = QLabel()
+        self.get_linked()
         self.flowerbedLinks.setFont(self.infoFont)
         self.flowerbedLinks.setAlignment(Qt.AlignBottom)
         
@@ -186,6 +187,7 @@ class FlowerbedsWindow(QWidget):
         self.newQuery2.exec_()
         self.operationModel.setQuery(self.newQuery2)
         self.operationTableView.setModel(self.operationModel)
+        self.get_linked()
 
 
 
@@ -206,6 +208,9 @@ class FlowerbedsWindow(QWidget):
             self.comparisonDate = datetime.timedelta(99999)
         else:
             pass
+        self.compareDate = datetime.datetime.today() - self.comparisonDate
+        self.compareDate = self.compareDate.strftime("%d/%m/%Y")
+        print(self.compareDate)
         self.newQuery3 = QSqlQuery()
         self.newQuery3.prepare("""SELECT
                                   Operation.date as "Date",
@@ -216,14 +221,15 @@ class FlowerbedsWindow(QWidget):
                                   Reading.reading as "1st Reading"
                                   FROM Operation, Reading
                                   WHERE Operation.FlowerbedID = ?
+                                  AND Operation.Date > ?
                                   AND Operation.readingBeforeID = Reading.readingID""")
         self.newQuery3.addBindValue(self.currentFlowerbedID)
+        self.newQuery3.addBindValue(self.compareDate)
         self.newQuery3.exec_()
         self.operationModel.setQuery(self.newQuery3)
         self.operationTableView.setModel(self.operationModel)
         
 
-    #works initially, but doesn't update when self.currentFlowerbedID is changed
     def get_linked(self):
         with sqlite3.connect("FlowerbedDatabase.db") as db2:
             self.cursor = db2.cursor()
@@ -236,7 +242,7 @@ class FlowerbedsWindow(QWidget):
                     self.linked.append(each)
             while len(self.linked) < 3:
                 self.linked.append("<N/A>")
-        self.flowerbedLinks = QLabel("This flowerbed is currently linked to moisture sensors number {0}, {1} and {2}.".format(self.linked[0],self.linked[1],self.linked[2]))
+        self.flowerbedLinks.setText("This flowerbed is currently linked to moisture sensors number {0}, {1} and {2}.".format(self.linked[0],self.linked[1],self.linked[2]))
 
 
     def add_flowerbed(self):

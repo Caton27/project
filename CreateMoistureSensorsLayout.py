@@ -97,7 +97,9 @@ class MoistureSensorsWindow(QWidget):
         #links
         self.infoFont = QFont()
         self.infoFont.setPointSize(8)
-        
+
+        self.flowerbedLinks = QLabel()
+        self.moistureSensorLinks = QLabel()
         self.get_linked()
         self.flowerbedLinks.setFont(self.infoFont)
         self.flowerbedLinks.setAlignment(Qt.AlignBottom)
@@ -162,7 +164,6 @@ class MoistureSensorsWindow(QWidget):
         self.moistureSensorsTableView.setModel(self.moistureSensorsModel)
         
 
-#works initially, but doesn't update when self.currentMoistureSensorID is changed
     def get_linked(self):
         with sqlite3.connect("FlowerbedDatabase.db") as db2:
             self.cursor = db2.cursor()
@@ -171,7 +172,9 @@ class MoistureSensorsWindow(QWidget):
             for each in self.cursor.fetchall():
                 for each in each:
                     self.linked1 = each
-        self.flowerbedLinks = QLabel("""This moisture sensor is currently linked to flowerbed number {0}.""".format(self.linked1))
+            if len(str(self.linked1)) == 0:
+                self.linked1 = "N/A"
+        self.flowerbedLinks.setText("""This moisture sensor is currently linked to flowerbed number {0}.""".format(self.linked1))
         
         with sqlite3.connect("FlowerbedDatabase.db") as db2:
             self.cursor = db2.cursor()
@@ -183,7 +186,9 @@ class MoistureSensorsWindow(QWidget):
                 for each in each:
                     if str(each) != str(self.currentMoistureSensorsID):
                         self.linked2.append(each)
-        self.moistureSensorLinks = QLabel("Moisture sensor numbers {0} and {1} are also linked to flowerbed number {2}.".format(self.linked2[0],self.linked2[1],self.linked1))
+            while len(self.linked2) < 2:
+                self.linked2.append("N/A")
+        self.moistureSensorLinks.setText("Moisture sensor numbers {0} and {1} are also linked to flowerbed number {2}.".format(self.linked2[0],self.linked2[1],self.linked1))
 
     
     def temp(self):
