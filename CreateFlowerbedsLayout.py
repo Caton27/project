@@ -209,8 +209,7 @@ class FlowerbedsWindow(QWidget):
         else:
             pass
         self.compareDate = datetime.datetime.today() - self.comparisonDate
-        self.compareDate = self.compareDate.strftime("%d/%m/%Y")
-        print(self.compareDate)
+        self.compareDate = self.compareDate.strftime("%Y/%m/%d")
         self.newQuery3 = QSqlQuery()
         self.newQuery3.prepare("""SELECT
                                   Operation.date as "Date",
@@ -221,7 +220,7 @@ class FlowerbedsWindow(QWidget):
                                   Reading.reading as "1st Reading"
                                   FROM Operation, Reading
                                   WHERE Operation.FlowerbedID = ?
-                                  AND Operation.Date > ?
+                                  AND Operation.date > ?
                                   AND Operation.readingBeforeID = Reading.readingID""")
         self.newQuery3.addBindValue(self.currentFlowerbedID)
         self.newQuery3.addBindValue(self.compareDate)

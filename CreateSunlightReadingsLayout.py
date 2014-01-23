@@ -94,7 +94,6 @@ class SunlightWindow(QWidget):
         return self.sunlight_layout_widget
 
     def select_timeframe(self):
-        #datetime & PyQtSql
         self.currentTimeframe = self.timeframeComboBox.currentIndex()
         if self.currentTimeframe == 0:
             self.comparisonDate = datetime.timedelta(1)
@@ -110,13 +109,16 @@ class SunlightWindow(QWidget):
             self.comparisonDate = datetime.timedelta(99999)
         else:
             pass
-
+        self.compareDate = datetime.datetime.today() - self.comparisonDate
+        self.compareDate = self.compareDate.strftime("%Y/%m/%d")
         self.newQuery = QSqlQuery()
         self.newQuery.prepare("""SELECT
                                       date as "Date",
                                       reading as "Intensity"
                                       FROM Reading
-                                      WHERE readingTypeID = 2""")
+                                      WHERE readingTypeID = 2
+                                      AND date > ?""")
+        self.newQuery.addBindValue(self.compareDate)
         self.newQuery.exec_()
         self.sunlightModel.setQuery(self.newQuery)
         self.sunlightTableView.setModel(self.sunlightModel)

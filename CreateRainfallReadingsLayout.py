@@ -106,7 +106,8 @@ class RainfallWindow(QWidget):
             self.comparisonDate = datetime.timedelta(99999)
         else:
             pass
-
+        self.compareDate = datetime.datetime.today() - self.comparisonDate
+        self.compareDate = self.compareDate.strftime("%Y/%m/%d")
         self.newQuery = QSqlQuery()
         self.newQuery.prepare("""SELECT
                                       date as "Date",
@@ -114,7 +115,9 @@ class RainfallWindow(QWidget):
                                       reading as "Duration",
                                       averageReading as "Depth"
                                       FROM Reading
-                                      WHERE readingTypeID = 3""")
+                                      WHERE readingTypeID = 3
+                                      AND date > ?""")
+        self.newQuery.addBindValue(self.compareDate)
         self.newQuery.exec_()
         self.rainfallModel.setQuery(self.newQuery)
         self.rainfallTableView.setModel(self.rainfallModel)

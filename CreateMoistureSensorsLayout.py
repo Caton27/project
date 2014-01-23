@@ -150,6 +150,8 @@ class MoistureSensorsWindow(QWidget):
             self.comparisonDate = datetime.timedelta(99999)
         else:
             pass
+        self.compareDate = datetime.datetime.today() - self.comparisonDate
+        self.compareDate = self.compareDate.strftime("%Y/%m/%d")
         self.newQuery2 = QSqlQuery()
         self.newQuery2.prepare("""SELECT
                                   date as "Date",
@@ -157,8 +159,10 @@ class MoistureSensorsWindow(QWidget):
                                   reading as "Reading",
                                   averageReading as "Average Reading"
                                   FROM Reading
-                                  WHERE SensorID = ?""")
+                                  WHERE SensorID = ?
+                                  AND date > ?""")
         self.newQuery2.addBindValue(self.currentMoistureSensorsID)
+        self.newQuery2.addBindValue(self.compareDate)
         self.newQuery2.exec_()
         self.moistureSensorsModel.setQuery(self.newQuery2)
         self.moistureSensorsTableView.setModel(self.moistureSensorsModel)

@@ -76,6 +76,8 @@ class VolumetricsWindow(QWidget):
             self.totalCostString = "£" + str(self.totalCost)
             if self.totalCostString[-2] == ".":
                 self.totalCostString += "0"
+            elif len(self.totalCostString) == 2:
+                self.totalCostString += ".00"
             
         self.volumeWaterLabel2 = QLabel("Volume of water used:")
         self.volumeWaterLabel2.setFixedWidth(110)
@@ -135,7 +137,52 @@ class VolumetricsWindow(QWidget):
         return self.volumetrics_layout_widget
 
     def select_timeframe(self):
-        pass
+        self.currentTimeframe = self.timeframeComboBox.currentIndex()
+        if self.currentTimeframe == 0:
+            self.comparisonDate = datetime.timedelta(1)
+        elif self.currentTimeframe == 1:
+            self.comparisonDate = datetime.timedelta(7)
+        elif self.currentTimeframe == 2:
+            self.comparisonDate = datetime.timedelta(30)
+        elif self.currentTimeframe == 3:
+            self.comparisonDate = datetime.timedelta(183)
+        elif self.currentTimeframe == 4:
+            self.comparisonDate = datetime.timedelta(365)
+        elif self.currentTimeframe == 5:
+            self.comparisonDate = datetime.timedelta(99999)
+        else:
+            pass
+        self.compareDate = datetime.datetime.today() - self.comparisonDate
+        self.compareDate = self.compareDate.strftime("%Y/%m/%d")
+        values = (self.compareDate,)
+        
+        #amount
+        with sqlite3.connect("FlowerbedDatabase.db") as db2:
+            self.totalVolume = 0
+            self.cursor = db2.cursor()
+            self.cursor.execute("""select amount from Operation
+                                   where date > ?""",values)
+            for each in self.cursor.fetchall():
+                for each in each:
+                    self.totalVolume += float(each)
+            self.totalVolumeString = str(self.totalVolume) + " Litres"
+            self.volumeLineEdit.setText(self.totalVolumeString)
+
+        #cost
+        with sqlite3.connect("FlowerbedDatabase.db") as db2:
+            self.totalCost = 0
+            self.cursor = db2.cursor()
+            self.cursor.execute("""select cost from Operation
+                                   where date > ?""",values)
+            for each in self.cursor.fetchall():
+                for each in each:
+                    self.totalCost += float(each)
+            self.totalCostString = "£" + str(self.totalCost)
+            if self.totalCostString[-2] == ".":
+                self.totalCostString += "0"
+            elif len(self.totalCostString) == 2:
+                self.totalCostString += ".00"
+            self.costLineEdit.setText(self.totalCostString)
 
 if __name__ == "__main__":
     application = QApplication(sys.argv)
