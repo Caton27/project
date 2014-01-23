@@ -144,18 +144,23 @@ class MainWindow(QMainWindow):
 
     def flowerbeds_view(self):
         self.stackedLayout.setCurrentIndex(1)
+        self.setWindowTitle("Irigation system - View Flowerbeds")
 
     def moisture_sensors_view(self):
         self.stackedLayout.setCurrentIndex(2)
+        self.setWindowTitle("Irigation system - View Moisture Sensors")
 
     def sunlight_view(self):
         self.stackedLayout.setCurrentIndex(3)
+        self.setWindowTitle("Irigation system - View Sunlight Readings")
 
     def rainfall_view(self):
         self.stackedLayout.setCurrentIndex(4)
+        self.setWindowTitle("Irigation system - View Rainfall Readings")
 
     def volumetrics_view(self):
         self.stackedLayout.setCurrentIndex(5)
+        self.setWindowTitle("Irigation system - View Volumetrics")
         
         
     
