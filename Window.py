@@ -8,6 +8,7 @@ from CreateMoistureSensorsLayout import *
 from CreateSunlightReadingsLayout import *
 from CreateRainfallReadingsLayout import *
 from CreateVolumetricsLayout import *
+from CreatePlantsLayout import *
 
 import sys
 
@@ -76,7 +77,7 @@ class MainWindow(QMainWindow):
         #creating the plants action
         self.plantsAction = QAction(QIcon(), "Plants", self)
         self.plantsAction.setStatusTip("Edit plants")
-        self.plantsAction.triggered.connect(self.temp)
+        self.plantsAction.triggered.connect(self.plants_view)
 
         #creating the relationships action
         self.relationshipsAction = QAction(QIcon(), "Relationships", self)
@@ -113,6 +114,7 @@ class MainWindow(QMainWindow):
         self.aboutAction.setStatusTip("About the program")
         self.aboutAction.triggered.connect(self.temp)
 
+        #creatin the help action
         self.helpAction = QAction(QIcon(), "Help", self)
         self.helpAction.setStatusTip("Help")
         self.helpAction.triggered.connect(self.temp)
@@ -133,6 +135,7 @@ class MainWindow(QMainWindow):
         self.sunlight_layout_widget = SunlightWindow()
         self.rainfall_layout_widget = RainfallWindow()
         self.volumetrics_layout_widget = VolumetricsWindow()
+        self.plants_layout_widget = PlantsWindow()
 
     def add_windows(self):
         self.stackedLayout.addWidget(self.initial_layout_widget)
@@ -141,6 +144,7 @@ class MainWindow(QMainWindow):
         self.stackedLayout.addWidget(self.sunlight_layout_widget)
         self.stackedLayout.addWidget(self.rainfall_layout_widget)
         self.stackedLayout.addWidget(self.volumetrics_layout_widget)
+        self.stackedLayout.addWidget(self.plants_layout_widget)
 
     def flowerbeds_view(self):
         self.stackedLayout.setCurrentIndex(1)
@@ -161,6 +165,10 @@ class MainWindow(QMainWindow):
     def volumetrics_view(self):
         self.stackedLayout.setCurrentIndex(5)
         self.setWindowTitle("Irigation system - View Volumetrics")
+
+    def plants_view(self):
+        self.stackedLayout.setCurrentIndex(6)
+        self.setWindowTitle("Irigation system - Edit Plants")
         
         
     

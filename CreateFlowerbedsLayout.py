@@ -72,7 +72,8 @@ class FlowerbedsWindow(QWidget):
         self.flowerbedQuery.prepare("""SELECT
                                        plantGrowing as "Plant",
                                        datePlanted as "Date Planted",
-                                       waterNeed as "Water Need"
+                                       waterNeed as "Water Need",
+                                       notes as "Notes"
                                        FROM Plant
                                        WHERE FlowerbedID = ?""")
         self.flowerbedQuery.addBindValue(self.currentFlowerbedID)
@@ -81,7 +82,8 @@ class FlowerbedsWindow(QWidget):
         self.flowerbedModel.setQuery(self.flowerbedQuery)
         self.flowerbedTableView.setModel(self.flowerbedModel)
 
-        self.flowerbedTableView.setFixedWidth(334)
+        self.flowerbedTableView.setFixedWidth(434)
+        self.flowerbedTableView.setMaximumWidth(724)
         self.flowerbedTableView.setMinimumHeight(115)
         self.flowerbedTableView.setMaximumHeight(self.maxHeight)
         
@@ -164,7 +166,8 @@ class FlowerbedsWindow(QWidget):
         self.newQuery1.prepare("""SELECT
                                  plantGrowing as "Plant",
                                  datePlanted as "Date Planted",
-                                 waterNeed as "Water Need"
+                                 waterNeed as "Water Need",
+                                 notes as "Notes"
                                  FROM Plant
                                  WHERE FlowerbedID = ?""")
         self.newQuery1.addBindValue(self.currentFlowerbedID)

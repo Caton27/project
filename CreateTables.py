@@ -29,6 +29,7 @@ def sql_statements():
                   plantGrowing Text,
                   datePlanted Text,
                   waterNeed Float,
+                  notes Text,
                   flowerbedID Integer,
                   primary key(plantID),
                   foreign key(flowerbedID) references Flowerbed(flowerbedID)

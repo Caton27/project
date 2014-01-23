@@ -69,22 +69,22 @@ if __name__ == "__main__":
 
     products = []
     now = datetime.datetime(2013,9,8)
-    products.append(("Roses",now.strftime("%Y/%m/%d"),5,1))
-    products.append(("Lilies",now.strftime("%Y/%m/%d"),5,1))
-    products.append(("Daffodils",now.strftime("%Y/%m/%d"),5,1))
-    products.append(("Cake",now.strftime("%Y/%m/%d"),5,1))
-    products.append(("Roses",now.strftime("%Y/%m/%d"),5,3))
-    products.append(("Lilies",now.strftime("%Y/%m/%d"),5,2))
-    products.append(("Daffodils",now.strftime("%Y/%m/%d"),5,3))
-    products.append(("Cake",now.strftime("%Y/%m/%d"),5,4))
-    products.append(("Roses",now.strftime("%Y/%m/%d"),5,5))
-    products.append(("Lilies",now.strftime("%%Y/%m/%d"),5,7))
-    products.append(("Daffodils",now.strftime("%Y/%m/%d"),5,6))
-    products.append(("Cake",now.strftime("%Y/%m/%d"),5,8))
+    products.append(("Roses",now.strftime("%Y/%m/%d"),"These are some notes",5,1))
+    products.append(("Lilies",now.strftime("%Y/%m/%d"),"These are some notes",5,1))
+    products.append(("Daffodils",now.strftime("%Y/%m/%d"),"These are some notes",5,1))
+    products.append(("Cake",now.strftime("%Y/%m/%d"),"These are some notes",5,1))
+    products.append(("Roses",now.strftime("%Y/%m/%d"),"These are some notes",5,3))
+    products.append(("Lilies",now.strftime("%Y/%m/%d"),"These are some notes",5,2))
+    products.append(("Daffodils",now.strftime("%Y/%m/%d"),"These are some notes",5,3))
+    products.append(("Cake",now.strftime("%Y/%m/%d"),"These are some notes",5,4))
+    products.append(("Roses",now.strftime("%Y/%m/%d"),"These are some notes",5,5))
+    products.append(("Lilies",now.strftime("%%Y/%m/%d"),"These are some notes",5,7))
+    products.append(("Daffodils",now.strftime("%Y/%m/%d"),"These are some notes",5,6))
+    products.append(("Cake",now.strftime("%Y/%m/%d"),"These are some notes",5,8))
     for each in products:
         with sqlite3.connect("FlowerbedDatabase.db") as db:
             cursor = db.cursor()
-            sql = "insert into Plant(plantGrowing, datePlanted, waterNeed, flowerbedID) values (?,?,?,?)"
+            sql = "insert into Plant(plantGrowing, datePlanted, notes, waterNeed, flowerbedID) values (?,?,?,?,?)"
             cursor.execute(sql,each)
             db.commit()
     
