@@ -9,6 +9,7 @@ from CreateSunlightReadingsLayout import *
 from CreateRainfallReadingsLayout import *
 from CreateVolumetricsLayout import *
 from CreatePlantsLayout import *
+from CreateRelationshipsLayout import *
 
 import sys
 
@@ -82,7 +83,7 @@ class MainWindow(QMainWindow):
         #creating the relationships action
         self.relationshipsAction = QAction(QIcon(), "Relationships", self)
         self.relationshipsAction.setStatusTip("Edit existing relationships")
-        self.relationshipsAction.triggered.connect(self.temp)
+        self.relationshipsAction.triggered.connect(self.relationships_view)
 
         #creating the new hardware action
         self.newHardwareAction = QAction(QIcon(), "New Hardware", self)
@@ -136,6 +137,7 @@ class MainWindow(QMainWindow):
         self.rainfall_layout_widget = RainfallWindow()
         self.volumetrics_layout_widget = VolumetricsWindow()
         self.plants_layout_widget = PlantsWindow()
+        self.relationships_layout_widget = RelationshipsWindow()
 
     def add_windows(self):
         self.stackedLayout.addWidget(self.initial_layout_widget)
@@ -145,6 +147,7 @@ class MainWindow(QMainWindow):
         self.stackedLayout.addWidget(self.rainfall_layout_widget)
         self.stackedLayout.addWidget(self.volumetrics_layout_widget)
         self.stackedLayout.addWidget(self.plants_layout_widget)
+        self.stackedLayout.addWidget(self.relationships_layout_widget)
 
     def flowerbeds_view(self):
         self.stackedLayout.setCurrentIndex(1)
@@ -169,6 +172,10 @@ class MainWindow(QMainWindow):
     def plants_view(self):
         self.stackedLayout.setCurrentIndex(6)
         self.setWindowTitle("Irigation system - Edit Plants")
+
+    def relationships_view(self):
+        self.stackedLayout.setCurrentIndex(7)
+        self.setWindowTitle("Irigation system - Edit Relationships")
         
         
     

@@ -97,6 +97,7 @@ class PlantsWindow(QWidget):
         self.datePlantedLabel = QLabel("Date planted")
         self.datePlantedLineEdit = QLineEdit()
         self.datePlantedLineEdit.setFixedWidth(80)
+        self.datePlantedLineEdit.setPlaceholderText("YYYY/MM/DD")
         self.datePlantedTempLabel = QLabel("")
         self.datePlantedTempLabel.setFixedWidth(30)
         self.datePlantedPushButton = QPushButton("D")

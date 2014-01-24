@@ -11,7 +11,7 @@ class FlowerbedsWindow(QWidget):
     #constructor
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Irigation system - Flowerbeds")
+        self.setWindowTitle("Irigation system - Plants")
 
         self.db = QSqlDatabase.addDatabase("QSQLITE")
         self.db.setDatabaseName("FlowerbedDatabase.db")
@@ -254,9 +254,6 @@ class FlowerbedsWindow(QWidget):
             newID = ((int(self.cursor.fetchall()[-1][0]) + 1),)
             self.cursor.execute("insert into Flowerbed(flowerbedID) values(?)",newID)
             db2.commit()
-        
-    def temp(self):
-        pass
 
 
 if __name__ == "__main__":
