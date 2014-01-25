@@ -85,6 +85,7 @@ class VolumetricsWindow(QWidget):
         self.volumeLineEdit2 = QLineEdit()
         self.volumeLineEdit2.setFixedWidth(100)
         self.volumeLineEdit2.setText(self.totalVolumeString)
+        self.volumeLineEdit2.setReadOnly(True)
 
         self.costLabel2 = QLabel("Cost:")
         self.costLabel2.setAlignment(Qt.AlignLeft)
@@ -92,6 +93,7 @@ class VolumetricsWindow(QWidget):
         self.costLineEdit2 = QLineEdit()
         self.costLineEdit2.setFixedWidth(100)
         self.costLineEdit2.setText(self.totalCostString)
+        self.costLineEdit2.setReadOnly(True)
         
         self.layout3.addWidget(self.volumeWaterLabel2,0,2)
         self.layout3.addWidget(self.volumeLineEdit2,0,3)
@@ -106,6 +108,7 @@ class VolumetricsWindow(QWidget):
         self.volumeLineEdit = QLineEdit()
         self.volumeLineEdit.setFixedWidth(100)
         self.volumeLineEdit.setText(self.totalVolumeString)
+        self.volumeLineEdit.setReadOnly(True)
 
         self.costLabel = QLabel("Cost:")
         self.costLabel.setAlignment(Qt.AlignLeft)
@@ -113,6 +116,7 @@ class VolumetricsWindow(QWidget):
         self.costLineEdit = QLineEdit()
         self.costLineEdit.setFixedWidth(100)
         self.costLineEdit.setText(self.totalCostString)
+        self.costLineEdit.setReadOnly(True)
 
         self.layout2.addWidget(self.volumeWaterLabel,0,0)
         self.layout2.addWidget(self.volumeLineEdit,0,1)

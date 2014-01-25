@@ -10,6 +10,8 @@ from CreateRainfallReadingsLayout import *
 from CreateVolumetricsLayout import *
 from CreatePlantsLayout import *
 from CreateRelationshipsLayout import *
+from CreateHardwareLayout import *
+from CreateQueriesLayout import *
 
 import sys
 
@@ -88,7 +90,7 @@ class MainWindow(QMainWindow):
         #creating the new hardware action
         self.newHardwareAction = QAction(QIcon(), "New Hardware", self)
         self.newHardwareAction.setStatusTip("Add new hardware to the system")
-        self.newHardwareAction.triggered.connect(self.temp)
+        self.newHardwareAction.triggered.connect(self.hardware_view)
 
         #adding actions to the edit menu
         self.editMenu = self.menubar.addMenu("Edit")
@@ -102,7 +104,7 @@ class MainWindow(QMainWindow):
         #creating the queries action
         self.queriesAction = QAction(QIcon(), "Queries", self)
         self.queriesAction.setStatusTip("Input custom queries")
-        self.queriesAction.triggered.connect(self.temp)
+        self.queriesAction.triggered.connect(self.queries_view)
 
         #adding actions to the options menu
         self.optionsMenu = self.menubar.addMenu("Options")
@@ -138,6 +140,8 @@ class MainWindow(QMainWindow):
         self.volumetrics_layout_widget = VolumetricsWindow()
         self.plants_layout_widget = PlantsWindow()
         self.relationships_layout_widget = RelationshipsWindow()
+        self.hardware_layout_widget = HardwareWindow()
+        self.queries_layout_widget = QueryWindow()
 
     def add_windows(self):
         self.stackedLayout.addWidget(self.initial_layout_widget)
@@ -148,6 +152,8 @@ class MainWindow(QMainWindow):
         self.stackedLayout.addWidget(self.volumetrics_layout_widget)
         self.stackedLayout.addWidget(self.plants_layout_widget)
         self.stackedLayout.addWidget(self.relationships_layout_widget)
+        self.stackedLayout.addWidget(self.hardware_layout_widget)
+        self.stackedLayout.addWidget(self.queries_layout_widget)
 
     def flowerbeds_view(self):
         self.stackedLayout.setCurrentIndex(1)
@@ -176,8 +182,14 @@ class MainWindow(QMainWindow):
     def relationships_view(self):
         self.stackedLayout.setCurrentIndex(7)
         self.setWindowTitle("Irigation system - Edit Relationships")
-        
-        
+
+    def hardware_view(self):
+        self.stackedLayout.setCurrentIndex(8)
+        self.setWindowTitle("Irigation system - Add hardware")
+
+    def queries_view(self):
+        self.stackedLayout.setCurrentIndex(9)
+        self.setWindowTitle("Irigation system - Custom queries")
     
 if __name__ == "__main__":
     application = QApplication(sys.argv)

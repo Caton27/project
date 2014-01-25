@@ -124,10 +124,10 @@ class RelationshipsWindow(QWidget):
         self.relationships_layout.addWidget(self.relationshipsLabel)
         for each in self.layouts:
             self.relationships_layout.addLayout(each)
+        
 
         self.relationships_layout_widget = QWidget()
         self.relationships_layout_widget.setLayout(self.relationships_layout)
-
         return self.relationships_layout_widget
 
     def temp():
@@ -138,6 +138,6 @@ if __name__ == "__main__":
     relationshipsWindow = RelationshipsWindow()
     relationshipsWindow.show()
     relationshipsWindow.raise_()
-    relationshipsWindow.resize(700,600)
+    relationshipsWindow.resize(500,600)
     application.exec_()
 
