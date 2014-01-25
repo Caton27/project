@@ -74,6 +74,7 @@ class RelationshipsWindow(QWidget):
             self.valveLabel = QLabel("Valve")
             self.valveLabel.setFixedWidth(40)
             self.valveComboBox = QComboBox()
+            self.valveComboBox.addItem("-")
             for each2 in valveList:
                 self.valveComboBox.addItem(str(each2))
             self.valveComboBox.setFixedWidth(30)
@@ -87,6 +88,7 @@ class RelationshipsWindow(QWidget):
             self.moistureSensorLabel1 = QLabel("Moisture sensor")
             self.moistureSensorLabel1.setFixedWidth(100)
             self.moistureSensorComboBox1 = QComboBox()
+            self.moistureSensorComboBox1.addItem("-")
             for each2 in sensorList:
                 self.moistureSensorComboBox1.addItem(str(each2))
             self.moistureSensorComboBox1.setFixedWidth(30)
@@ -96,6 +98,7 @@ class RelationshipsWindow(QWidget):
             self.moistureSensorLabel2 = QLabel("Moisture sensor")
             self.moistureSensorLabel2.setFixedWidth(100)
             self.moistureSensorComboBox2 = QComboBox()
+            self.moistureSensorComboBox2.addItem("-")
             for each2 in sensorList:
                 self.moistureSensorComboBox2.addItem(str(each2))
             self.moistureSensorComboBox2.setFixedWidth(30)
@@ -105,6 +108,7 @@ class RelationshipsWindow(QWidget):
             self.moistureSensorLabel3 = QLabel("Moisture sensor")
             self.moistureSensorLabel3.setFixedWidth(100)
             self.moistureSensorComboBox3 = QComboBox()
+            self.moistureSensorComboBox3.addItem("-")
             for each2 in sensorList:
                 self.moistureSensorComboBox3.addItem(str(each2))
             self.moistureSensorComboBox1.setFixedWidth(30)

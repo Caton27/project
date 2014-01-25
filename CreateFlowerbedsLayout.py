@@ -254,6 +254,9 @@ class FlowerbedsWindow(QWidget):
             newID = ((int(self.cursor.fetchall()[-1][0]) + 1),)
             self.cursor.execute("insert into Flowerbed(flowerbedID) values(?)",newID)
             db2.commit()
+        self.confirmMessage = QMessageBox()
+        self.confirmMessage.setText("New flowerbed with ID no. {0} has been created".format(newID[0]))
+        self.confirmMessage.exec_()
 
 
 if __name__ == "__main__":
