@@ -12,6 +12,8 @@ from CreatePlantsLayout import *
 from CreateRelationshipsLayout import *
 from CreateHardwareLayout import *
 from CreateQueriesLayout import *
+from CreateAboutLayout import *
+from CreateHelpLayout import *
 
 import sys
 
@@ -115,12 +117,12 @@ class MainWindow(QMainWindow):
         #creating the about {program name} action
         self.aboutAction = QAction(QIcon(), "About", self)
         self.aboutAction.setStatusTip("About the program")
-        self.aboutAction.triggered.connect(self.temp)
+        self.aboutAction.triggered.connect(self.about_view)
 
         #creatin the help action
         self.helpAction = QAction(QIcon(), "Help", self)
         self.helpAction.setStatusTip("Help")
-        self.helpAction.triggered.connect(self.temp)
+        self.helpAction.triggered.connect(self.help_view)
 
         #adding actions to the options menu
         self.helpMenu = self.menubar.addMenu("Help")
@@ -142,6 +144,8 @@ class MainWindow(QMainWindow):
         self.relationships_layout_widget = RelationshipsWindow()
         self.hardware_layout_widget = HardwareWindow()
         self.queries_layout_widget = QueryWindow()
+        self.about_layout_widget = AboutWindow()
+        self.help_layout_widget = HelpWindow()
 
     def add_windows(self):
         self.stackedLayout.addWidget(self.initial_layout_widget)
@@ -154,6 +158,8 @@ class MainWindow(QMainWindow):
         self.stackedLayout.addWidget(self.relationships_layout_widget)
         self.stackedLayout.addWidget(self.hardware_layout_widget)
         self.stackedLayout.addWidget(self.queries_layout_widget)
+        self.stackedLayout.addWidget(self.about_layout_widget)
+        self.stackedLayout.addWidget(self.help_layout_widget)
 
     def flowerbeds_view(self):
         self.stackedLayout.setCurrentIndex(1)
@@ -190,6 +196,14 @@ class MainWindow(QMainWindow):
     def queries_view(self):
         self.stackedLayout.setCurrentIndex(9)
         self.setWindowTitle("Irigation system - Custom queries")
+
+    def about_view(self):
+        self.stackedLayout.setCurrentIndex(10)
+        self.setWindowTitle("Irigation system - About")
+
+    def help_view(self):
+        self.stackedLayout.setCurrentIndex(11)
+        self.setWindowTitle("Irigation system - Help")
     
 if __name__ == "__main__":
     application = QApplication(sys.argv)

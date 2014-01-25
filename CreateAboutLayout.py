@@ -23,17 +23,30 @@ class AboutWindow(QWidget):
     def create_about_layout(self):
         self.about_layout = QVBoxLayout()
 
-        #widgets    
-        #self.aboutText.setWordWrap(True)
+        self.titleFont = QFont()
+        self.titleFont.setPointSize(13)
+        self.titleFont.setBold(True)
 
+        #widgets
+        self.aboutLabel = QLabel("About")
+        self.aboutLabel.setFont(self.titleFont)
+        
         self.theDate = datetime.datetime.today()
         self.theDate = self.theDate.strftime("%d/%m/%Y %H:%M.%S")
-        self.initiatedText = QLabel("Program initiated: {0}".format(self.theDate))
-        
-        self.about_layout.addWidget(self.initiatedText)
+        self.aboutText = QLabel("""Program initially created:
+    29/11/2013
+
+Program initiated:
+    {0}
+""".format(self.theDate))
 
 
         #add widgets
+        self.about_layout.addWidget(self.aboutLabel)
+        self.about_layout.addWidget(self.aboutText)
+        self.about_layout.setAlignment(Qt.AlignTop)
+
+
         self.about_layout_widget = QWidget()
         self.about_layout_widget.setLayout(self.about_layout)
 
