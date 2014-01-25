@@ -5,6 +5,7 @@ from PyQt4.QtSql import *
 import sqlite3
 import sys
 import datetime
+import re
 
 class PlantsWindow(QWidget):
     """Window"""
@@ -97,7 +98,7 @@ class PlantsWindow(QWidget):
         self.datePlantedLabel = QLabel("Date planted")
         self.datePlantedLineEdit = QLineEdit()
         self.datePlantedLineEdit.setFixedWidth(80)
-        self.datePlantedLineEdit.setPlaceholderText("YYYY/MM/DD")
+        self.datePlantedLineEdit.setPlaceholderText("DD/MM/YYYY")
         self.datePlantedTempLabel = QLabel("")
         self.datePlantedTempLabel.setFixedWidth(30)
         self.datePlantedPushButton = QPushButton("D")
@@ -129,10 +130,10 @@ class PlantsWindow(QWidget):
         
 
         #layout 4
-        self.confirmPushButton = QPushButton("Confirm changes")
+        self.confirmPushButton = QPushButton("Add plant")
         self.confirmPushButton.clicked.connect(self.save_changes)
 
-        self.clearPushButton = QPushButton("Clear changes")
+        self.clearPushButton = QPushButton("Clear fields")
         self.clearPushButton.clicked.connect(self.clear_changes)
 
         self.layout4.addWidget(self.confirmPushButton)
@@ -152,16 +153,106 @@ class PlantsWindow(QWidget):
         return self.plants_layout_widget
 
     def save_changes(self):
-        self.flowerbedModel.submitAll() #Don't know why this doesn't work
-
+##        self.flowerbedModel.submitAll() #Don't know why this doesn't work
+        self.plantNameText = self.plantNameLineEdit.text()
+        self.datePlantedText = self.datePlantedLineEdit.text()
+        self.waterReqText = self.waterReqLineEdit.text()
+        self.notesText = self.notesLineEdit.text()
+        self.check_values()
+        if self.valid == False:
+            self.notValidText = "The following errors occurred when processing the entered values:"
+            for each in self.reasons:
+                self.notValidText +="""
+> """
+                self.notValidText += each
+            self.notValidMessage = QMessageBox()
+            self.notValidMessage.setText(self.notValidText)
+            self.notValidMessage.exec_()
+        else:
+            values = (self.plantNameText, self.datePlantedText, self.waterReqText, self.notesText, self.flowerbedsComboBox.currentIndex() + 1)
+            with sqlite3.connect("FlowerbedDatabase.db") as db2:
+                self.cursor = db2.cursor()
+                self.cursor.execute("""insert into Plant(
+                                       plantGrowing, datePlanted, waterNeed, notes, flowerbedID)
+                                       values(?,?,?,?,?)""", values)
+                db2.commit()
+            self.select_flowerbed()
+            
         #once everything is submitted
         self.clear_changes()
+
 
     def clear_changes(self):
         self.plantNameLineEdit.clear()
         self.datePlantedLineEdit.clear()
         self.waterReqLineEdit.clear()
         self.notesLineEdit.clear()
+
+
+    def check_values(self):
+        self.valid = True
+        self.reasons = []
+        
+        #check name
+        item = self.plantNameText
+        if len(item) == 0:
+            self.valid = False
+            self.reasons.append("Plant name is not present")
+        elif len(item) > 30:
+            self.reasons.append("Plant name exceeds 30 characters")
+        
+        #check date planted
+        item = self.datePlantedText
+        expression = re.compile("[0-3][0-9]/(0|1)[0-9]/[0-9][0-9][0-9][0-9]")
+        validString = expression.match(item)
+        if len(item) == 0:
+            self.valid = False
+            self.reasons.append("Date planted is not present")
+        elif not validString:
+            self.valid = False
+            self.reasons.append("Date planted is not in the correct format (DD/MM/YYYY)")
+        else:
+            if int(item[3:5]) not in range(1,13):
+                self.valid = False
+                self.reasons.append("Date does not exist")
+            elif item[3:5] in ("04","06","09","11") and int(item[0:2]) not in range(1,31):
+                self.valid = False
+                self.reasons.append("Date does not exist")
+            elif item[3:5] in ("01","03","05","07","08","10","12") and int(item[0:2]) not in range(1,32):
+                self.valid = False
+                self.reasons.append("Date does not exist")
+            elif item[3:5] == "02" and int(item[6:10]) % 4 != 0 and int(item[0:2]) not in range(1,29):
+                self.valid = False
+                self.reasons.append("Date does not exist")
+            elif item[3:5] == "02" and int(item[6:10]) % 4 == 0 and int(item[0:2]) not in range(1,30):
+                self.valid = False
+                self.reasons.append("Date does not exist")
+
+        #check water requirements
+        item = self.waterReqText
+        if len(item) == 0:
+            self.waterReqText = "-"
+        else:
+            try:
+                item = float(item)
+                if item < 0:
+                    self.valid = False
+                    self.reasons.append("Water requirements not within range 0 to 5")
+                elif item > 5:
+                    self.valid = False
+                    self.reasons.append("Water requirements not within range 0 to 5")
+            except (ValueError, TypeError):
+                self.valid = False
+                self.reasons.append("Water requirements not a decimal number")
+
+        #check notes
+        item = self.notesText
+        if len(item) == 0:
+            self.notesText = "-"
+        elif len(item) > 100:
+            self.valid = False
+            self.reasons.append("Notes exceeds 100 characters")
+        
     
     def select_flowerbed(self):
         self.currentFlowerbedID = self.flowerbedsComboBox.currentIndex() + 1
