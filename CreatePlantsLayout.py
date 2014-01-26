@@ -154,11 +154,19 @@ class PlantsWindow(QWidget):
 
     def save_changes(self):
 ##        self.flowerbedModel.submitAll() #Don't know why this doesn't work
+        self.valid = True
+        self.reasons = []
+        
         self.plantNameText = self.plantNameLineEdit.text()
         self.datePlantedText = self.datePlantedLineEdit.text()
         self.waterReqText = self.waterReqLineEdit.text()
         self.notesText = self.notesLineEdit.text()
-        self.check_values()
+        
+        self.check_plant_name()
+        self.check_date_planted()
+        self.check_water_req()
+        self.check_notes()
+        
         if self.valid == False:
             self.notValidText = "The following errors occurred when processing the entered values:"
             for each in self.reasons:
@@ -169,6 +177,8 @@ class PlantsWindow(QWidget):
             self.notValidMessage.setText(self.notValidText)
             self.notValidMessage.exec_()
         else:
+            temp = self.datePlantedText[6:10] + "/" + self.datePlantedText[3:5] + "/" + self.datePlantedText[0:2]
+            self.datePlantedText = temp
             values = (self.plantNameText, self.datePlantedText, self.waterReqText, self.notesText, self.flowerbedsComboBox.currentIndex() + 1)
             with sqlite3.connect("FlowerbedDatabase.db") as db2:
                 self.cursor = db2.cursor()
@@ -189,10 +199,7 @@ class PlantsWindow(QWidget):
         self.notesLineEdit.clear()
 
 
-    def check_values(self):
-        self.valid = True
-        self.reasons = []
-        
+    def check_plant_name(self):
         #check name
         item = self.plantNameText
         if len(item) == 0:
@@ -200,7 +207,9 @@ class PlantsWindow(QWidget):
             self.reasons.append("Plant name is not present")
         elif len(item) > 30:
             self.reasons.append("Plant name exceeds 30 characters")
-        
+
+
+    def check_date_planted(self):
         #check date planted
         item = self.datePlantedText
         expression = re.compile("[0-3][0-9]/(0|1)[0-9]/[0-9][0-9][0-9][0-9]")
@@ -228,6 +237,8 @@ class PlantsWindow(QWidget):
                 self.valid = False
                 self.reasons.append("Date does not exist")
 
+
+    def check_water_req(self):
         #check water requirements
         item = self.waterReqText
         if len(item) == 0:
@@ -245,6 +256,8 @@ class PlantsWindow(QWidget):
                 self.valid = False
                 self.reasons.append("Water requirements not a decimal number")
 
+
+    def check_notes(self):
         #check notes
         item = self.notesText
         if len(item) == 0:
