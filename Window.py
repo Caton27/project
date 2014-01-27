@@ -28,15 +28,19 @@ class MainWindow(QMainWindow):
         self.db = QSqlDatabase.addDatabase("QSQLITE")
         self.db.setDatabaseName("FlowerbedDatabase.db")
         self.db.open()
-        
+
+        self.scroll_area = QScrollArea()
+
         self.setMenuBar = self.menu_bar()
         self.create_windows()
+        self.add_scroll_areas()
         self.add_windows()
         
         self.central_widget = QWidget()
         self.central_widget.setLayout(self.stackedLayout)
         self.setCentralWidget(self.central_widget)
 
+        
     def menu_bar(self):
         self.statusBar()
         self.menubar = self.menuBar()
@@ -147,27 +151,67 @@ class MainWindow(QMainWindow):
         self.about_layout_widget = AboutWindow()
         self.help_layout_widget = HelpWindow()
 
+    def add_scroll_areas(self):
+##        self.initial_layout_widget_with_scroll_area = QScrollArea()
+##        self.initial_layout_widget_with_scroll_area.setWidget(self.initial_layout_widget)
+##
+        self.flowerbeds_layout_widget_with_scroll_area = QScrollArea()
+        self.flowerbeds_layout_widget_with_scroll_area.setWidget(self.flowerbeds_layout_widget)
+##
+        self.moisture_sensors_layout_widget_with_scroll_area = QScrollArea()
+        self.moisture_sensors_layout_widget_with_scroll_area.setWidget(self.moisture_sensors_layout_widget)
+##
+##        self.sunlight_layout_widget_with_scroll_area = QScrollArea()
+##        self.sunlight_layout_widget_with_scroll_area.setWidget(self.sunlight_layout_widget)
+##
+##        self.rainfall_layout_widget_with_scroll_area = QScrollArea()
+##        self.rainfall_layout_widget_with_scroll_area.setWidget(self.rainfall_layout_widget)
+##
+##        self.volumetrics_layout_widget_with_scroll_area = QScrollArea()
+##        self.volumetrics_layout_widget_with_scroll_area.setWidget(self.volumetrics_layout_widget)
+##
+        self.plants_layout_widget_with_scroll_area = QScrollArea()
+        self.plants_layout_widget_with_scroll_area.setWidget(self.plants_layout_widget)
+##
+        self.relationships_layout_widget_with_scroll_area = QScrollArea()
+        self.relationships_layout_widget_with_scroll_area.setWidget(self.relationships_layout_widget)
+##
+##        self.hardware_layout_widget_with_scroll_area = QScrollArea()
+##        self.hardware_layout_widget_with_scroll_area.setWidget(self.hardware_layout_widget)
+##
+##        self.queries_layout_widget_with_scroll_area = QScrollArea()
+##        self.queries_layout_widget_with_scroll_area.setWidget(self.queries_layout_widget)
+##
+##        self.about_layout_widget_with_scroll_area = QScrollArea()
+##        self.about_layout_widget_with_scroll_area.setWidget(self.about_layout_widget)
+##
+        self.help_layout_widget_with_scroll_area = QScrollArea()
+        self.help_layout_widget_with_scroll_area.setWidget(self.help_layout_widget)
+        
+
     def add_windows(self):
         self.stackedLayout.addWidget(self.initial_layout_widget)
-        self.stackedLayout.addWidget(self.flowerbeds_layout_widget)   
-        self.stackedLayout.addWidget(self.moisture_sensors_layout_widget)
+        self.stackedLayout.addWidget(self.flowerbeds_layout_widget_with_scroll_area) ##  
+        self.stackedLayout.addWidget(self.moisture_sensors_layout_widget_with_scroll_area)##
         self.stackedLayout.addWidget(self.sunlight_layout_widget)
         self.stackedLayout.addWidget(self.rainfall_layout_widget)
         self.stackedLayout.addWidget(self.volumetrics_layout_widget)
-        self.stackedLayout.addWidget(self.plants_layout_widget)
-        self.stackedLayout.addWidget(self.relationships_layout_widget)
+        self.stackedLayout.addWidget(self.plants_layout_widget_with_scroll_area)##
+        self.stackedLayout.addWidget(self.relationships_layout_widget_with_scroll_area)##
         self.stackedLayout.addWidget(self.hardware_layout_widget)
         self.stackedLayout.addWidget(self.queries_layout_widget)
         self.stackedLayout.addWidget(self.about_layout_widget)
-        self.stackedLayout.addWidget(self.help_layout_widget)
+        self.stackedLayout.addWidget(self.help_layout_widget_scroll_area)##
 
     def flowerbeds_view(self):
         self.stackedLayout.setCurrentIndex(1)
         self.setWindowTitle("Irigation system - View Flowerbeds")
+        window.resize(800,550)
 
     def moisture_sensors_view(self):
         self.stackedLayout.setCurrentIndex(2)
         self.setWindowTitle("Irigation system - View Moisture Sensors")
+        window.resize(500,450)
 
     def sunlight_view(self):
         self.stackedLayout.setCurrentIndex(3)
@@ -184,6 +228,7 @@ class MainWindow(QMainWindow):
     def plants_view(self):
         self.stackedLayout.setCurrentIndex(6)
         self.setWindowTitle("Irigation system - Edit Plants")
+        window.resize(650,450)
 
     def relationships_view(self):
         self.stackedLayout.setCurrentIndex(7)

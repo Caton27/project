@@ -18,6 +18,7 @@ class RelationshipsWindow(QWidget):
         self.db.open()
 
         self.create_relationships_layout()
+        
         self.setLayout(self.relationships_layout)
 
 
