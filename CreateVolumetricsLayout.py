@@ -133,6 +133,7 @@ class VolumetricsWindow(QWidget):
         #add layouts
         self.volumetrics_layout.addLayout(self.layout1)
         self.volumetrics_layout.addLayout(self.layout4)
+        self.volumetrics_layout.setAlignment(Qt.AlignTop)
 
 
         self.volumetrics_layout_widget = QWidget()

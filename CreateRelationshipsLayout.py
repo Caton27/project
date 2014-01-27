@@ -82,6 +82,7 @@ class RelationshipsWindow(QWidget):
             self.valves = QHBoxLayout()
             self.valves.addWidget(self.valveLabel)
             self.valves.addWidget(self.valveComboBox)
+            self.valves.addSpacing(130)
 
             #moisture sensors
             self.sensors = QGridLayout()
@@ -119,6 +120,7 @@ class RelationshipsWindow(QWidget):
 
             self.relationshipsLayout.addLayout(self.valves)
             self.relationshipsLayout.addLayout(self.sensors)
+            self.relationshipsLayout.addSpacing(20)
             
             
             self.relationshipsGroupBox.setLayout(self.relationshipsLayout)

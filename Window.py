@@ -154,37 +154,37 @@ class MainWindow(QMainWindow):
     def add_scroll_areas(self):
 ##        self.initial_layout_widget_with_scroll_area = QScrollArea()
 ##        self.initial_layout_widget_with_scroll_area.setWidget(self.initial_layout_widget)
-##
+
         self.flowerbeds_layout_widget_with_scroll_area = QScrollArea()
         self.flowerbeds_layout_widget_with_scroll_area.setWidget(self.flowerbeds_layout_widget)
-##
+
         self.moisture_sensors_layout_widget_with_scroll_area = QScrollArea()
         self.moisture_sensors_layout_widget_with_scroll_area.setWidget(self.moisture_sensors_layout_widget)
-##
+
 ##        self.sunlight_layout_widget_with_scroll_area = QScrollArea()
 ##        self.sunlight_layout_widget_with_scroll_area.setWidget(self.sunlight_layout_widget)
-##
+
 ##        self.rainfall_layout_widget_with_scroll_area = QScrollArea()
 ##        self.rainfall_layout_widget_with_scroll_area.setWidget(self.rainfall_layout_widget)
-##
+
 ##        self.volumetrics_layout_widget_with_scroll_area = QScrollArea()
 ##        self.volumetrics_layout_widget_with_scroll_area.setWidget(self.volumetrics_layout_widget)
-##
+
         self.plants_layout_widget_with_scroll_area = QScrollArea()
         self.plants_layout_widget_with_scroll_area.setWidget(self.plants_layout_widget)
-##
+
         self.relationships_layout_widget_with_scroll_area = QScrollArea()
         self.relationships_layout_widget_with_scroll_area.setWidget(self.relationships_layout_widget)
-##
+
 ##        self.hardware_layout_widget_with_scroll_area = QScrollArea()
 ##        self.hardware_layout_widget_with_scroll_area.setWidget(self.hardware_layout_widget)
-##
+
 ##        self.queries_layout_widget_with_scroll_area = QScrollArea()
 ##        self.queries_layout_widget_with_scroll_area.setWidget(self.queries_layout_widget)
-##
+
 ##        self.about_layout_widget_with_scroll_area = QScrollArea()
 ##        self.about_layout_widget_with_scroll_area.setWidget(self.about_layout_widget)
-##
+
         self.help_layout_widget_with_scroll_area = QScrollArea()
         self.help_layout_widget_with_scroll_area.setWidget(self.help_layout_widget)
         
@@ -201,60 +201,92 @@ class MainWindow(QMainWindow):
         self.stackedLayout.addWidget(self.hardware_layout_widget)
         self.stackedLayout.addWidget(self.queries_layout_widget)
         self.stackedLayout.addWidget(self.about_layout_widget)
-        self.stackedLayout.addWidget(self.help_layout_widget_scroll_area)##
+        self.stackedLayout.addWidget(self.help_layout_widget_with_scroll_area)##
+
+    def get_old_size(self):
+        oldSize = ["",""]
+        each = ""
+        oldSizeTemp = str(window.size())[19:-1]
+        for each in oldSizeTemp[0:4]:
+            if each != "," and each != " ":
+                oldSize[0] += each
+        oldSize[0] = int(oldSize[0])
+        for each in oldSizeTemp[5:]:
+            if each != "," and each != " ":
+                oldSize[1] += each
+        oldSize[1] = int(oldSize[1])
+        return oldSize
 
     def flowerbeds_view(self):
         self.stackedLayout.setCurrentIndex(1)
         self.setWindowTitle("Irigation system - View Flowerbeds")
-        window.resize(800,550)
+        oldSize = self.get_old_size()
+        if oldSize[0] < 800 or oldSize[1] < 550:
+            window.resize(800,550)
 
     def moisture_sensors_view(self):
         self.stackedLayout.setCurrentIndex(2)
         self.setWindowTitle("Irigation system - View Moisture Sensors")
-        window.resize(500,450)
+        oldSize = self.get_old_size()
+        if oldSize[0] < 500 or oldSize[1] < 450:
+            window.resize(500,450)
+
 
     def sunlight_view(self):
         self.stackedLayout.setCurrentIndex(3)
         self.setWindowTitle("Irigation system - View Sunlight Readings")
+        window.resize(600,400)
+
 
     def rainfall_view(self):
         self.stackedLayout.setCurrentIndex(4)
         self.setWindowTitle("Irigation system - View Rainfall Readings")
+        window.resize(400,400)
 
     def volumetrics_view(self):
         self.stackedLayout.setCurrentIndex(5)
         self.setWindowTitle("Irigation system - View Volumetrics")
+        window.resize(550,400)
 
     def plants_view(self):
         self.stackedLayout.setCurrentIndex(6)
         self.setWindowTitle("Irigation system - Edit Plants")
-        window.resize(650,450)
+        oldSize = self.get_old_size()
+        if oldSize[0] < 650 or oldSize[1] < 450:
+            window.resize(650,450)
 
     def relationships_view(self):
         self.stackedLayout.setCurrentIndex(7)
         self.setWindowTitle("Irigation system - Edit Relationships")
+        oldSize = self.get_old_size()
+        if oldSize[0] < 400 or oldSize[1] < 700:
+            window.resize(400,500)
 
     def hardware_view(self):
         self.stackedLayout.setCurrentIndex(8)
         self.setWindowTitle("Irigation system - Add hardware")
+        window.resize(300,400)
 
     def queries_view(self):
         self.stackedLayout.setCurrentIndex(9)
         self.setWindowTitle("Irigation system - Custom queries")
+        window.resize(600,500)
 
     def about_view(self):
         self.stackedLayout.setCurrentIndex(10)
         self.setWindowTitle("Irigation system - About")
+        window.resize(300,400)
 
     def help_view(self):
         self.stackedLayout.setCurrentIndex(11)
         self.setWindowTitle("Irigation system - Help")
+        window.resize(400,500)
     
 if __name__ == "__main__":
     application = QApplication(sys.argv)
     window = MainWindow()
     window.show()
     window.raise_()
-    window.resize(600,350)
+    window.resize(600,450)
     application.exec_()
     
